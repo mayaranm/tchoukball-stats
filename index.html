@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Tchoukball Stats</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #1a1d27;
+    --bg3: #22263a;
+    --border: rgba(255,255,255,0.08);
+    --text: #f0f2ff;
+    --muted: #8b90a8;
+    --blue: #3b82f6;
+    --blue2: #1d4ed8;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --pink: #ec4899;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+
+  /* HEADER */
+  .header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 14px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
+  .header-logo { width: 36px; height: 36px; background: var(--blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .header-title { font-size: 16px; font-weight: 700; }
+  .header-sub { font-size: 11px; color: var(--muted); }
+  .header-mode { margin-left: auto; display: flex; gap: 6px; }
+  .mode-btn { padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; transition: all .2s; }
+  .mode-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+  /* NAV */
+  .nav { display: flex; background: var(--bg2); border-bottom: 1px solid var(--border); overflow-x: auto; }
+  .nav-btn { flex: 1; min-width: 80px; padding: 12px 8px; border: none; background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; white-space: nowrap; }
+  .nav-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+  /* CONTENT */
+  .content { padding: 16px; max-width: 800px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* CARDS */
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+  .card-title { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: .5px; }
+
+  /* FORM */
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group label { font-size: 11px; color: var(--muted); }
+  input, select { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; color: var(--text); font-size: 14px; width: 100%; outline: none; }
+  input:focus, select:focus { border-color: var(--blue); }
+  select option { background: var(--bg3); }
+
+  /* BUTTONS */
+  .btn { padding: 10px 18px; border-radius: var(--radius-sm); border: none; cursor: pointer; font-size: 14px; font-weight: 600; transition: all .15s; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-primary:hover { background: var(--blue2); }
+  .btn-primary:active { transform: scale(0.97); }
+  .btn-danger { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .btn-success { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .btn-full { width: 100%; }
+
+  /* PERIOD BAR */
+  .period-bar { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; }
+  .period-label { font-size: 12px; color: var(--muted); }
+  .period-btn { padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 13px; cursor: pointer; transition: all .2s; }
+  .period-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .score-box { margin-left: auto; display: flex; align-items: center; gap: 10px; background: var(--bg3); border-radius: var(--radius-sm); padding: 6px 14px; }
+  .score-val { font-size: 22px; font-weight: 700; }
+  .score-sep { color: var(--muted); font-size: 14px; }
+
+  /* ATHLETE CARD */
+  .athlete-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin-bottom: 10px; }
+  .athlete-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .athlete-badge { width: 32px; height: 32px; border-radius: 50%; background: var(--blue2); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .athlete-name { font-size: 15px; font-weight: 600; flex: 1; }
+  .athlete-pts { font-size: 13px; color: var(--green); font-weight: 600; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stat-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 6px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg3); cursor: pointer; transition: all .1s; user-select: none; -webkit-user-select: none; }
+  .stat-btn:active { transform: scale(0.93); opacity: .8; }
+  .stat-num { font-size: 22px; font-weight: 700; line-height: 1; }
+  .stat-label { font-size: 10px; color: var(--muted); text-align: center; }
+  .stat-btn.arr .stat-num { color: var(--blue); }
+  .stat-btn.pts .stat-num { color: var(--green); }
+  .stat-btn.contra .stat-num { color: var(--red); }
+  .stat-btn.falta .stat-num { color: var(--amber); }
+  .stat-btn.def .stat-num { color: #a78bfa; }
+  .stat-btn.bola .stat-num { color: var(--pink); }
+
+  /* METRIC CARDS */
+  .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+  .metric { background: var(--bg3); border-radius: var(--radius-sm); padding: 12px; }
+  .metric-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .metric-val { font-size: 26px; font-weight: 700; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { padding: 8px 10px; text-align: left; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 9px 10px; border-bottom: 1px solid var(--border); color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* SESSIONS LIST */
+  .session-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg3); border-radius: var(--radius-sm); margin-bottom: 8px; cursor: pointer; transition: background .2s; }
+  .session-item:hover { background: var(--bg2); }
+  .session-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .session-icon.jogo { background: rgba(59,130,246,0.2); }
+  .session-icon.treino { background: rgba(34,197,94,0.2); }
+  .session-info { flex: 1; }
+  .session-title { font-size: 14px; font-weight: 600; }
+  .session-sub { font-size: 11px; color: var(--muted); }
+  .session-score { font-size: 16px; font-weight: 700; color: var(--green); }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg2); border: 1px solid var(--border); padding: 10px 20px; border-radius: 20px; font-size: 13px; z-index: 9999; opacity: 0; transition: opacity .3s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+
+  /* EMPTY */
+  .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
+  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty p { font-size: 14px; }
+
+  /* LOADING */
+  .loading { text-align: center; padding: 30px; color: var(--muted); font-size: 14px; }
+
+  /* UNDO */
+  .undo-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+  .undo-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; }
+
+  /* PERIOD SUMMARY */
+  .period-sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+  .psum-card { background: var(--bg3); border-radius: var(--radius-sm); padding: 10px; text-align: center; }
+  .psum-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+  .psum-pts { font-size: 20px; font-weight: 700; color: var(--green); }
+  .psum-ct { font-size: 12px; color: var(--red); }
+
+  .tag { display: inline-block; padding: 3px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+  .tag-jogo { background: rgba(59,130,246,0.2); color: #93c5fd; }
+  .tag-treino { background: rgba(34,197,94,0.2); color: #86efac; }
+
+  @media (max-width: 480px) {
+    .form-row { grid-template-columns: 1fr; }
+    .form-row-3 { grid-template-columns: 1fr 1fr; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">🏐</div>
+  <div>
+    <div class="header-title">Tchoukball Stats</div>
+    <div class="header-sub" id="header-sub">Beach Tchoukball</div>
+  </div>
+  <div class="header-mode">
+    <button class="mode-btn active" id="btn-mode-jogo" onclick="setMode('jogo')">🏆 Jogo</button>
+    <button class="mode-btn" id="btn-mode-treino" onclick="setMode('treino')">🏃 Treino</button>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showTab('registrar')">📋 Registrar</button>
+  <button class="nav-btn" onclick="showTab('analise')">📊 Análise</button>
+  <button class="nav-btn" onclick="showTab('historico')">📁 Histórico</button>
+  <button class="nav-btn" onclick="showTab('atletas')">👥 Atletas</button>
+</div>
+
+<div class="content">
+
+  <!-- REGISTRAR -->
+  <div class="section active" id="sec-registrar">
+    <div class="card" id="session-config-card">
+      <div class="card-title" id="config-title">⚙️ Configurar Jogo</div>
+      <div class="form-row" id="adversario-row">
+        <div class="form-group">
+          <label>Adversário</label>
+          <input type="text" id="inp-adversario" placeholder="Nome do time adversário" />
+        </div>
+        <div class="form-group">
+          <label>Campeonato</label>
+          <input type="text" id="inp-campeonato" placeholder="Ex: Brasileiro" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Data</label>
+          <input type="date" id="inp-data" />
+        </div>
+        <div class="form-group">
+          <label>Local</label>
+          <input type="text" id="inp-local" placeholder="Ex: São Paulo" />
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="startSession()">▶ Iniciar Sessão</button>
+    </div>
+
+    <div id="session-active" style="display:none;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <div>
+          <div style="font-size:15px;font-weight:700;" id="session-title-display">Jogo</div>
+          <div style="font-size:12px;color:var(--muted);" id="session-info-display"></div>
+        </div>
+        <button class="btn btn-danger btn-sm" style="margin-left:auto;" onclick="finishSession()">✅ Finalizar</button>
+      </div>
+
+      <div id="period-section">
+        <div class="period-bar">
+          <span class="period-label">Tempo:</span>
+          <button class="period-btn active" id="pb-1" onclick="setPeriod(1)">1°</button>
+          <button class="period-btn" id="pb-2" onclick="setPeriod(2)">2°</button>
+          <button class="period-btn" id="pb-3" onclick="setPeriod(3)">3°</button>
+          <div class="score-box">
+            <span class="score-val" style="color:var(--green);" id="live-pts">0</span>
+            <span class="score-sep">×</span>
+            <span class="score-val" style="color:var(--red);" id="live-contra">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="athletes-register"></div>
+      <div class="undo-row">
+        <button class="undo-btn" onclick="undoLast()">↩ Desfazer último</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANÁLISE -->
+  <div class="section" id="sec-analise">
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+      <select id="sel-session" style="flex:1;" onchange="loadAnalysis()">
+        <option value="">Selecione uma sessão...</option>
+      </select>
+    </div>
+    <div id="analysis-content">
+      <div class="empty"><div class="empty-icon">📊</div><p>Selecione uma sessão para ver a análise</p></div>
+    </div>
+  </div>
+
+  <!-- HISTÓRICO -->
+  <div class="section" id="sec-historico">
+    <div id="historico-list"><div class="loading">Carregando...</div></div>
+  </div>
+
+  <!-- ATLETAS -->
+  <div class="section" id="sec-atletas">
+    <div class="card">
+      <div class="card-title">➕ Adicionar Atleta</div>
+      <div class="form-row-3">
+        <div class="form-group">
+          <label>Número</label>
+          <input type="number" id="inp-ath-num" placeholder="N°" min="0" max="99" />
+        </div>
+        <div class="form-group" style="grid-column: span 2;">
+          <label>Nome</label>
+          <input type="text" id="inp-ath-nome" placeholder="Nome completo" onkeydown="if(event.key==='Enter')addAthlete()" />
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="addAthlete()">Adicionar Atleta</button>
+    </div>
+    <div id="athletes-list-config"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDfw_daD5cEQbixT4jlteUl0Lz9LTGtWYI",
+  authDomain: "tchoukball-8a931.firebaseapp.com",
+  projectId: "tchoukball-8a931",
+  storageBucket: "tchoukball-8a931.firebasestorage.app",
+  messagingSenderId: "977850787605",
+  appId: "1:977850787605:web:75bffc53eace5bf50c6b1c"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// STATE
+let mode = 'jogo';
+let period = 1;
+let activeSession = null;
+let athletes = [];
+let sessionAthleteStats = {};
+let history = [];
+let sessions = [];
+
+// TOAST
+window.showToast = function(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// MODE
+window.setMode = function(m) {
+  mode = m;
+  document.getElementById('btn-mode-jogo').classList.toggle('active', m === 'jogo');
+  document.getElementById('btn-mode-treino').classList.toggle('active', m === 'treino');
+  document.getElementById('adversario-row').style.display = m === 'jogo' ? 'grid' : 'none';
+  document.getElementById('config-title').textContent = m === 'jogo' ? '⚙️ Configurar Jogo' : '⚙️ Configurar Treino';
+  document.getElementById('period-section').style.display = m === 'jogo' ? 'block' : 'none';
+  document.getElementById('header-sub').textContent = m === 'jogo' ? 'Modo Jogo' : 'Modo Treino';
+}
+
+// TABS
+window.showTab = function(tab) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (tab === 'historico') loadHistorico();
+  if (tab === 'analise') loadSessionSelector();
+  if (tab === 'atletas') renderAthletesList();
+}
+
+// ATHLETES
+async function loadAthletes() {
+  const q = query(collection(db, 'athletes'), orderBy('num'));
+  const snap = await getDocs(q);
+  athletes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  renderAthletesList();
+}
+
+window.addAthlete = async function() {
+  const num = document.getElementById('inp-ath-num').value.trim();
+  const nome = document.getElementById('inp-ath-nome').value.trim();
+  if (!nome) { showToast('Digite o nome do atleta'); return; }
+  await addDoc(collection(db, 'athletes'), { num: num || '?', nome, createdAt: serverTimestamp() });
+  document.getElementById('inp-ath-num').value = '';
+  document.getElementById('inp-ath-nome').value = '';
+  await loadAthletes();
+  showToast('✅ Atleta adicionado!');
+}
+
+window.removeAthlete = async function(id, nome) {
+  if (!confirm('Remover ' + nome + '?')) return;
+  await deleteDoc(doc(db, 'athletes', id));
+  await loadAthletes();
+  showToast('Atleta removido');
+}
+
+function renderAthletesList() {
+  const el = document.getElementById('athletes-list-config');
+  if (!athletes.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>Nenhum atleta cadastrado</p></div>'; return; }
+  el.innerHTML = athletes.map(a => `
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;">
+      <div style="width:30px;height:30px;border-radius:50%;background:var(--blue2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">${a.num}</div>
+      <span style="flex:1;font-size:14px;font-weight:500;">${a.nome}</span>
+      <button onclick="removeAthlete('${a.id}','${a.nome}')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:18px;">×</button>
+    </div>`).join('');
+}
+
+// SESSION
+function defaultStats() {
+  return { arremessos: [0,0,0], pontos: [0,0,0], contra: [0,0,0], falta: [0,0,0], defesas: [0,0,0], bola: [0,0,0] };
+}
+
+window.startSession = async function() {
+  if (!athletes.length) { showToast('⚠️ Adicione atletas primeiro!'); return; }
+  const data = document.getElementById('inp-data').value || new Date().toISOString().split('T')[0];
+  const adversario = document.getElementById('inp-adversario').value.trim();
+  const campeonato = document.getElementById('inp-campeonato').value.trim();
+  const local = document.getElementById('inp-local').value.trim();
+
+  sessionAthleteStats = {};
+  athletes.forEach(a => { sessionAthleteStats[a.id] = defaultStats(); });
+  history = [];
+
+  activeSession = {
+    mode, data, adversario, campeonato, local,
+    status: 'active',
+    createdAt: serverTimestamp(),
+    athleteStats: sessionAthleteStats
+  };
+
+  const ref = await addDoc(collection(db, 'sessions'), activeSession);
+  activeSession.firestoreId = ref.id;
+
+  document.getElementById('session-config-card').style.display = 'none';
+  document.getElementById('session-active').style.display = 'block';
+
+  const title = mode === 'jogo' ? (adversario ? `vs ${adversario}` : 'Jogo') : 'Treino';
+  document.getElementById('session-title-display').textContent = title;
+  document.getElementById('session-info-display').textContent = `${data}${campeonato ? ' · ' + campeonato : ''}${local ? ' · ' + local : ''}`;
+
+  setPeriod(1);
+  renderRegisterAthletes();
+  showToast('✅ Sessão iniciada!');
+}
+
+window.setPeriod = function(p) {
+  period = p;
+  [1,2,3].forEach(i => document.getElementById('pb-'+i).classList.toggle('active', i===p));
+  renderRegisterAthletes();
+}
+
+function statTotal(aid, s) {
+  const st = sessionAthleteStats[aid];
+  if (!st) return 0;
+  return st[s].reduce((x,v)=>x+v,0);
+}
+
+function renderRegisterAthletes() {
+  const el = document.getElementById('athletes-register');
+  const p = period - 1;
+  el.innerHTML = athletes.map(a => {
+    const st = sessionAthleteStats[a.id] || defaultStats();
+    return `<div class="athlete-card">
+      <div class="athlete-header">
+        <div class="athlete-badge">${a.num}</div>
+        <div class="athlete-name">${a.nome}</div>
+        <div class="athlete-pts">${statTotal(a.id,'pontos')}pts</div>
+      </div>
+      <div class="stat-grid">
+        <button class="stat-btn arr" onclick="incStat('${a.id}','arremessos')">
+          <span class="stat-num">${st.arremessos[p]}</span>
+          <span class="stat-label">Arremesso</span>
+        </button>
+        <button class="stat-btn pts" onclick="incStat('${a.id}','pontos')">
+          <span class="stat-num">${st.pontos[p]}</span>
+          <span class="stat-label">Ponto</span>
+        </button>
+        <button class="stat-btn contra" onclick="incStat('${a.id}','contra')">
+          <span class="stat-num">${st.contra[p]}</span>
+          <span class="stat-label">Ct. Adv</span>
+        </button>
+        <button class="stat-btn falta" onclick="incStat('${a.id}','falta')">
+          <span class="stat-num">${st.falta[p]}</span>
+          <span class="stat-label">Falta</span>
+        </button>
+        <button class="stat-btn def" onclick="incStat('${a.id}','defesas')">
+          <span class="stat-num">${st.defesas[p]}</span>
+          <span class="stat-label">Defesa</span>
+        </button>
+        <button class="stat-btn bola" onclick="incStat('${a.id}','bola')">
+          <span class="stat-num">${st.bola[p]}</span>
+          <span class="stat-label">B.Derrub</span>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+  updateLiveScore();
+}
+
+window.incStat = async function(aid, stat) {
+  const p = period - 1;
+  if (!sessionAthleteStats[aid]) sessionAthleteStats[aid] = defaultStats();
+  sessionAthleteStats[aid][stat][p]++;
+  history.push({ aid, stat, p });
+  renderRegisterAthletes();
+  if (activeSession?.firestoreId) {
+    const update = {};
+    update[`athleteStats.${aid}.${stat}`] = sessionAthleteStats[aid][stat];
+    await updateDoc(doc(db, 'sessions', activeSession.firestoreId), update);
+  }
+}
+
+window.undoLast = async function() {
+  if (!history.length) { showToast('Nada para desfazer'); return; }
+  const last = history.pop();
+  if (sessionAthleteStats[last.aid][last.stat][last.p] > 0) {
+    sessionAthleteStats[last.aid][last.stat][last.p]--;
+  }
+  renderRegisterAthletes();
+  if (activeSession?.firestoreId) {
+    const update = {};
+    update[`athleteStats.${last.aid}.${last.stat}`] = sessionAthleteStats[last.aid][last.stat];
+    await updateDoc(doc(db, 'sessions', activeSession.firestoreId), update);
+  }
+  showToast('↩ Desfeito');
+}
+
+function updateLiveScore() {
+  let pts = 0, contra = 0;
+  Object.keys(sessionAthleteStats).forEach(aid => {
+    pts += sessionAthleteStats[aid].pontos.reduce((s,v)=>s+v,0);
+    contra += sessionAthleteStats[aid].contra.reduce((s,v)=>s+v,0);
+  });
+  document.getElementById('live-pts').textContent = pts;
+  document.getElementById('live-contra').textContent = contra;
+}
+
+window.finishSession = async function() {
+  if (!confirm('Finalizar esta sessão?')) return;
+  if (activeSession?.firestoreId) {
+    await updateDoc(doc(db, 'sessions', activeSession.firestoreId), { status: 'finished' });
+  }
+  activeSession = null;
+  sessionAthleteStats = {};
+  history = [];
+  document.getElementById('session-config-card').style.display = 'block';
+  document.getElementById('session-active').style.display = 'none';
+  showToast('✅ Sessão finalizada e salva!');
+}
+
+// HISTÓRICO
+async function loadHistorico() {
+  const el = document.getElementById('historico-list');
+  el.innerHTML = '<div class="loading">Carregando...</div>';
+  const q = query(collection(db, 'sessions'), orderBy('createdAt', 'desc'));
+  const snap = await getDocs(q);
+  sessions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  if (!sessions.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">📁</div><p>Nenhuma sessão registrada</p></div>'; return; }
+
+  el.innerHTML = sessions.map(s => {
+    const pts = calcTotalPts(s);
+    const ct = calcTotalCt(s);
+    const dateStr = s.data || '';
+    const title = s.mode === 'jogo' ? (s.adversario ? `vs ${s.adversario}` : 'Jogo') : 'Treino';
+    const sub = [dateStr, s.campeonato, s.local].filter(Boolean).join(' · ');
+    return `<div class="session-item" onclick="openSession('${s.id}')">
+      <div class="session-icon ${s.mode}">${s.mode === 'jogo' ? '🏆' : '🏃'}</div>
+      <div class="session-info">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="session-title">${title}</span>
+          <span class="tag tag-${s.mode}">${s.mode}</span>
+          ${s.status === 'active' ? '<span class="tag" style="background:rgba(239,68,68,0.2);color:#fca5a5;">ao vivo</span>' : ''}
+        </div>
+        <div class="session-sub">${sub}</div>
+      </div>
+      <div class="session-score">${pts}<span style="color:var(--muted);font-size:12px;">×</span>${ct}</div>
+    </div>`;
+  }).join('');
+}
+
+function calcTotalPts(s) {
+  if (!s.athleteStats) return 0;
+  return Object.values(s.athleteStats).reduce((t, st) => t + st.pontos.reduce((a,b)=>a+b,0), 0);
+}
+function calcTotalCt(s) {
+  if (!s.athleteStats) return 0;
+  return Object.values(s.athleteStats).reduce((t, st) => t + st.contra.reduce((a,b)=>a+b,0), 0);
+}
+
+window.openSession = function(id) {
+  showTab_direct('analise');
+  document.getElementById('sel-session').value = id;
+  loadAnalysis();
+}
+
+function showTab_direct(tab) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + tab).classList.add('active');
+  document.querySelectorAll('.nav-btn')[1].classList.add('active');
+  loadSessionSelector();
+}
+
+// ANÁLISE
+async function loadSessionSelector() {
+  const sel = document.getElementById('sel-session');
+  const current = sel.value;
+  const q = query(collection(db, 'sessions'), orderBy('createdAt', 'desc'));
+  const snap = await getDocs(q);
+  sessions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  sel.innerHTML = '<option value="">Selecione uma sessão...</option>' +
+    sessions.map(s => {
+      const title = s.mode === 'jogo' ? (s.adversario ? `vs ${s.adversario}` : 'Jogo') : 'Treino';
+      return `<option value="${s.id}">${s.data || ''} — ${title}</option>`;
+    }).join('');
+  if (current) { sel.value = current; loadAnalysis(); }
+}
+
+window.loadAnalysis = function() {
+  const id = document.getElementById('sel-session').value;
+  if (!id) { document.getElementById('analysis-content').innerHTML = '<div class="empty"><div class="empty-icon">📊</div><p>Selecione uma sessão</p></div>'; return; }
+  const s = sessions.find(x => x.id === id);
+  if (!s) return;
+  renderAnalysis(s);
+}
+
+function renderAnalysis(s) {
+  const st = s.athleteStats || {};
+  const allAthletes = athletes;
+  const totPts = calcTotalPts(s);
+  const totCt = calcTotalCt(s);
+  const totArr = Object.values(st).reduce((t, a) => t + a.arremessos.reduce((x,b)=>x+b,0), 0);
+  const totDef = Object.values(st).reduce((t, a) => t + a.defesas.reduce((x,b)=>x+b,0), 0);
+  const ef = totArr > 0 ? Math.round((totPts/totArr)*100) : 0;
+
+  const isJogo = s.mode === 'jogo';
+  const title = isJogo ? (s.adversario ? `vs ${s.adversario}` : 'Jogo') : 'Treino';
+
+  let periodHtml = '';
+  if (isJogo) {
+    periodHtml = `<div class="card">
+      <div class="card-title">⏱ Por Tempo</div>
+      <div class="period-sum">
+        ${[1,2,3].map(p => {
+          const pp = p-1;
+          const pts = Object.values(st).reduce((t,a)=>t+a.pontos[pp],0);
+          const ct = Object.values(st).reduce((t,a)=>t+a.contra[pp],0);
+          return `<div class="psum-card">
+            <div class="psum-label">${p}° Tempo</div>
+            <div class="psum-pts">${pts}</div>
+            <div class="psum-ct">${ct} ct</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  const rankRows = [...allAthletes]
+    .filter(a => st[a.id])
+    .sort((a,b) => {
+      const ptA = st[a.id].pontos.reduce((x,v)=>x+v,0);
+      const ptB = st[b.id].pontos.reduce((x,v)=>x+v,0);
+      return ptB - ptA;
+    })
+    .map((a, i) => {
+      const as = st[a.id];
+      if (!as) return '';
+      const arr = as.arremessos.reduce((x,v)=>x+v,0);
+      const pts = as.pontos.reduce((x,v)=>x+v,0);
+      const ct = as.contra.reduce((x,v)=>x+v,0);
+      const flt = as.falta.reduce((x,v)=>x+v,0);
+      const def = as.defesas.reduce((x,v)=>x+v,0);
+      const bol = as.bola.reduce((x,v)=>x+v,0);
+      const ef = arr > 0 ? Math.round((pts/arr)*100) : 0;
+      return `<tr>
+        <td style="font-weight:700;color:var(--muted);">${i+1}</td>
+        <td><strong>${a.nome}</strong> <span style="font-size:10px;color:var(--muted);">#${a.num}</span></td>
+        <td style="color:var(--blue);">${arr}</td>
+        <td style="color:var(--green);font-weight:700;">${pts}</td>
+        <td style="color:var(--red);">${ct}</td>
+        <td style="color:var(--amber);">${flt}</td>
+        <td style="color:#a78bfa;">${def}</td>
+        <td style="color:var(--pink);">${bol}</td>
+        <td style="font-weight:600;">${ef}%</td>
+      </tr>`;
+    }).join('');
+
+  document.getElementById('analysis-content').innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+      <span style="font-size:18px;">${isJogo ? '🏆' : '🏃'}</span>
+      <div>
+        <div style="font-size:16px;font-weight:700;">${title}</div>
+        <div style="font-size:12px;color:var(--muted);">${[s.data, s.campeonato, s.local].filter(Boolean).join(' · ')}</div>
+      </div>
+    </div>
+    <div class="metrics-grid">
+      <div class="metric"><div class="metric-label">Pontos Feitos</div><div class="metric-val" style="color:var(--green);">${totPts}</div></div>
+      <div class="metric"><div class="metric-label">Pontos Tomados</div><div class="metric-val" style="color:var(--red);">${totCt}</div></div>
+      <div class="metric"><div class="metric-label">Arremessos</div><div class="metric-val">${totArr}</div></div>
+      <div class="metric"><div class="metric-label">Eficiência</div><div class="metric-val">${ef}%<span style="font-size:13px;color:var(--muted);"> | ${totDef} def</span></div></div>
+    </div>
+    ${periodHtml}
+    <div class="card">
+      <div class="card-title">🏅 Ranking de Atletas</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Atleta</th><th>Arr</th><th>Pts</th><th>Ct</th><th>Flt</th><th>Def</th><th>Bol</th><th>Ef%</th></tr></thead>
+          <tbody>${rankRows || '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px;">Nenhuma estatística</td></tr>'}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+// INIT
+document.getElementById('inp-data').value = new Date().toISOString().split('T')[0];
+setMode('jogo');
+await loadAthletes();
+</script>
+</body>
+</html>
