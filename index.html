@@ -1,84 +1,106 @@
+consegue gerar novamente o index
+
+2 de jun.
+Claro!
+
+
+Read current index.html
+Read current index.html
+vamos lá, como expliquei antes após a atualizaão das cores o site perdeu funcionalidade , quero que analise a conversa toda e ajuste o index e me enviei para eu colocar a versão correta no github
+
+09:21
+Vou analisar tudo e gerar um index.html completo e correto do zero!
+
+
+Read full current index.html
+Read full current index.html
+
+Read full current index.html
+
+Script
+Concluído
+Encontrei o problema! O código ficou quebrado durante as edições — a função renderAnalysis perdeu sua declaração e o rankRows ficou solto. Vou reescrever o arquivo completo e correto agora:
+
+
+Write complete clean index.html
+Write complete clean index.html
+
+Write complete clean index.html
+bash
+
+cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Tchoukball Stats</title>
+<title>Áquila Tchoukball Stats</title>
 <style>
   :root {
-    --bg: #0f1117;
-    --bg2: #1a1d27;
-    --bg3: #22263a;
-    --border: rgba(255,255,255,0.08);
-    --text: #f0f2ff;
-    --muted: #8b90a8;
-    --blue: #3b82f6;
-    --blue2: #1d4ed8;
-    --green: #22c55e;
-    --red: #ef4444;
+    --bg: #080a0e;
+    --bg2: #10131a;
+    --bg3: #181c26;
+    --border: rgba(255,255,255,0.07);
+    --text: #f0f0ff;
+    --muted: #7a7a9a;
+    --purple: #9b5de5;
+    --purple2: #7c3aed;
+    --green: #39d353;
+    --red: #f04f5e;
     --amber: #f59e0b;
-    --pink: #ec4899;
-    --radius: 12px;
-    --radius-sm: 8px;
+    --pink: #c084fc;
+    --radius: 14px;
+    --radius-sm: 9px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+  body { background: var(--bg); color: var(--text); font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; min-height: 100vh; }
 
-  /* HEADER */
-  .header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 14px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
-  .header-logo { width: 36px; height: 36px; background: var(--blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-  .header-title { font-size: 16px; font-weight: 700; }
+  .header { background: linear-gradient(90deg, #10131a, #1a1030); border-bottom: 1px solid rgba(155,93,229,0.25); padding: 14px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
+  .header-logo { width: 36px; height: 36px; background: linear-gradient(135deg, #9b5de5, #39d353); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .header-title { font-size: 16px; font-weight: 700; background: linear-gradient(90deg, #9b5de5, #39d353); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .header-sub { font-size: 11px; color: var(--muted); }
   .header-mode { margin-left: auto; display: flex; gap: 6px; }
   .mode-btn { padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; transition: all .2s; }
-  .mode-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .mode-btn.active { background: linear-gradient(135deg, #9b5de5, #7c3aed); color: #fff; border-color: #9b5de5; }
 
-  /* NAV */
-  .nav { display: flex; background: var(--bg2); border-bottom: 1px solid var(--border); overflow-x: auto; }
+  .nav { display: flex; background: var(--bg2); border-bottom: 1px solid rgba(155,93,229,0.2); overflow-x: auto; }
   .nav-btn { flex: 1; min-width: 80px; padding: 12px 8px; border: none; background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; white-space: nowrap; }
-  .nav-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+  .nav-btn.active { color: #39d353; border-bottom-color: #39d353; }
 
-  /* CONTENT */
   .content { padding: 16px; max-width: 800px; margin: 0 auto; }
   .section { display: none; }
   .section.active { display: block; }
 
-  /* CARDS */
   .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
   .card-title { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: .5px; }
 
-  /* FORM */
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
   .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
   .form-group { display: flex; flex-direction: column; gap: 4px; }
   .form-group label { font-size: 11px; color: var(--muted); }
   input, select { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; color: var(--text); font-size: 14px; width: 100%; outline: none; }
-  input:focus, select:focus { border-color: var(--blue); }
+  input:focus, select:focus { border-color: var(--purple); }
   select option { background: var(--bg3); }
 
-  /* BUTTONS */
   .btn { padding: 10px 18px; border-radius: var(--radius-sm); border: none; cursor: pointer; font-size: 14px; font-weight: 600; transition: all .15s; }
-  .btn-primary { background: var(--blue); color: #fff; }
-  .btn-primary:hover { background: var(--blue2); }
+  .btn-primary { background: linear-gradient(135deg, #9b5de5, #7c3aed); color: #fff; }
+  .btn-primary:hover { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
   .btn-primary:active { transform: scale(0.97); }
-  .btn-danger { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
-  .btn-success { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .btn-danger { background: rgba(240,79,94,0.15); color: var(--red); border: 1px solid rgba(240,79,94,0.3); }
   .btn-sm { padding: 6px 12px; font-size: 12px; }
   .btn-full { width: 100%; }
 
-  /* PERIOD BAR */
-  .period-bar { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; }
+  .period-bar { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; flex-wrap: wrap; }
   .period-label { font-size: 12px; color: var(--muted); }
   .period-btn { padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 13px; cursor: pointer; transition: all .2s; }
-  .period-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
-  .score-box { margin-left: auto; display: flex; align-items: center; gap: 10px; background: var(--bg3); border-radius: var(--radius-sm); padding: 6px 14px; }
+  .period-btn.active { background: #9b5de5; color: #fff; border-color: #9b5de5; }
+  .score-box { margin-left: auto; display: flex; align-items: center; gap: 10px; background: var(--bg3); border: 1px solid rgba(155,93,229,0.2); border-radius: var(--radius-sm); padding: 6px 14px; }
   .score-val { font-size: 22px; font-weight: 700; }
   .score-sep { color: var(--muted); font-size: 14px; }
 
-  /* ATHLETE CARD */
   .athlete-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin-bottom: 10px; }
   .athlete-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .athlete-badge { width: 32px; height: 32px; border-radius: 50%; background: var(--blue2); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .athlete-badge { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #9b5de5, #39d353); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
   .athlete-name { font-size: 15px; font-weight: 600; flex: 1; }
   .athlete-pts { font-size: 13px; color: var(--green); font-weight: 600; }
   .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -86,20 +108,18 @@
   .stat-btn:active { transform: scale(0.93); opacity: .8; }
   .stat-num { font-size: 22px; font-weight: 700; line-height: 1; }
   .stat-label { font-size: 10px; color: var(--muted); text-align: center; }
-  .stat-btn.arr .stat-num { color: var(--blue); }
+  .stat-btn.arr .stat-num { color: var(--purple); }
   .stat-btn.pts .stat-num { color: var(--green); }
   .stat-btn.contra .stat-num { color: var(--red); }
   .stat-btn.falta .stat-num { color: var(--amber); }
   .stat-btn.def .stat-num { color: #a78bfa; }
   .stat-btn.bola .stat-num { color: var(--pink); }
 
-  /* METRIC CARDS */
   .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
   .metric { background: var(--bg3); border-radius: var(--radius-sm); padding: 12px; }
   .metric-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
   .metric-val { font-size: 26px; font-weight: 700; }
 
-  /* TABLE */
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 12px; }
   th { padding: 8px 10px; text-align: left; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); white-space: nowrap; }
@@ -107,34 +127,27 @@
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: rgba(255,255,255,0.02); }
 
-  /* SESSIONS LIST */
   .session-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg3); border-radius: var(--radius-sm); margin-bottom: 8px; cursor: pointer; transition: background .2s; }
   .session-item:hover { background: var(--bg2); }
   .session-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-  .session-icon.jogo { background: rgba(59,130,246,0.2); }
-  .session-icon.treino { background: rgba(34,197,94,0.2); }
+  .session-icon.jogo { background: rgba(155,93,229,0.2); }
+  .session-icon.treino { background: rgba(57,211,83,0.2); }
   .session-info { flex: 1; }
   .session-title { font-size: 14px; font-weight: 600; }
   .session-sub { font-size: 11px; color: var(--muted); }
   .session-score { font-size: 16px; font-weight: 700; color: var(--green); }
 
-  /* TOAST */
-  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg2); border: 1px solid var(--border); padding: 10px 20px; border-radius: 20px; font-size: 13px; z-index: 9999; opacity: 0; transition: opacity .3s; pointer-events: none; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg2); border: 1px solid rgba(155,93,229,0.4); padding: 10px 20px; border-radius: 20px; font-size: 13px; z-index: 9999; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap; }
   .toast.show { opacity: 1; }
 
-  /* EMPTY */
   .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
   .empty-icon { font-size: 40px; margin-bottom: 12px; }
   .empty p { font-size: 14px; }
-
-  /* LOADING */
   .loading { text-align: center; padding: 30px; color: var(--muted); font-size: 14px; }
 
-  /* UNDO */
   .undo-row { display: flex; justify-content: flex-end; margin-top: 8px; }
   .undo-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; }
 
-  /* PERIOD SUMMARY */
   .period-sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
   .psum-card { background: var(--bg3); border-radius: var(--radius-sm); padding: 10px; text-align: center; }
   .psum-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
@@ -142,22 +155,54 @@
   .psum-ct { font-size: 12px; color: var(--red); }
 
   .tag { display: inline-block; padding: 3px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
-  .tag-jogo { background: rgba(59,130,246,0.2); color: #93c5fd; }
-  .tag-treino { background: rgba(34,197,94,0.2); color: #86efac; }
+  .tag-jogo { background: rgba(155,93,229,0.2); color: #c084fc; }
+  .tag-treino { background: rgba(57,211,83,0.2); color: #86efac; }
+
+  /* CARDS PERFIL */
+  .poke-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 14px; }
+  .poke-card { border-radius: 16px; padding: 16px; border: 2px solid transparent; position: relative; overflow: hidden; }
+  .poke-card::before { content: ''; position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; border-radius: 50%; opacity: .12; }
+  .poke-card.artilheira { background: linear-gradient(135deg, #1a2a1a, #0d1f0d); border-color: rgba(34,197,94,0.4); }
+  .poke-card.artilheira::before { background: #22c55e; }
+  .poke-card.guardia { background: linear-gradient(135deg, #1a1a2e, #0d0d2b); border-color: rgba(167,139,250,0.4); }
+  .poke-card.guardia::before { background: #a78bfa; }
+  .poke-card.guerreira { background: linear-gradient(135deg, #2a1a1a, #1f0d0d); border-color: rgba(239,68,68,0.4); }
+  .poke-card.guerreira::before { background: #ef4444; }
+  .poke-card.estrategista { background: linear-gradient(135deg, #1a1030, #0d0820); border-color: rgba(155,93,229,0.4); }
+  .poke-card.estrategista::before { background: #9b5de5; }
+  .poke-card.equilibrada { background: linear-gradient(135deg, #1f1a2a, #150d20); border-color: rgba(245,158,11,0.4); }
+  .poke-card.equilibrada::before { background: #f59e0b; }
+  .poke-card.iniciante { background: linear-gradient(135deg, #1a1d27, #12151e); border-color: rgba(139,144,168,0.3); }
+  .poke-card.iniciante::before { background: #8b90a8; }
+  .poke-title-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .poke-emoji { font-size: 26px; }
+  .poke-name { font-size: 15px; font-weight: 700; }
+  .poke-num { font-size: 10px; color: var(--muted); }
+  .poke-type { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-bottom: 8px; display: inline-block; }
+  .poke-desc { font-size: 10px; color: var(--muted); margin-bottom: 10px; }
+  .poke-bars { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+  .poke-bar-row { display: flex; align-items: center; gap: 6px; }
+  .poke-bar-label { font-size: 10px; color: var(--muted); width: 60px; flex-shrink: 0; }
+  .poke-bar-track { flex: 1; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+  .poke-bar-fill { height: 100%; border-radius: 3px; }
+  .poke-bar-val { font-size: 10px; font-weight: 600; width: 24px; text-align: right; }
+  .poke-bottom { display: flex; gap: 6px; flex-wrap: wrap; }
+  .poke-stat { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.06); }
 
   @media (max-width: 480px) {
     .form-row { grid-template-columns: 1fr; }
     .form-row-3 { grid-template-columns: 1fr 1fr; }
     .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .poke-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-logo">🏐</div>
+  <div class="header-logo">🦅</div>
   <div>
-    <div class="header-title">Tchoukball Stats</div>
+    <div class="header-title">Áquila Stats</div>
     <div class="header-sub" id="header-sub">Beach Tchoukball</div>
   </div>
   <div class="header-mode">
@@ -167,10 +212,10 @@
 </div>
 
 <div class="nav">
-  <button class="nav-btn active" onclick="showTab('registrar')">📋 Registrar</button>
-  <button class="nav-btn" onclick="showTab('analise')">📊 Análise</button>
-  <button class="nav-btn" onclick="showTab('historico')">📁 Histórico</button>
-  <button class="nav-btn" onclick="showTab('atletas')">👥 Atletas</button>
+  <button class="nav-btn active" onclick="showTab('registrar', this)">📋 Registrar</button>
+  <button class="nav-btn" onclick="showTab('analise', this)">📊 Análise</button>
+  <button class="nav-btn" onclick="showTab('historico', this)">📁 Histórico</button>
+  <button class="nav-btn" onclick="showTab('atletas', this)">👥 Atletas</button>
 </div>
 
 <div class="content">
@@ -234,8 +279,8 @@
 
   <!-- ANÁLISE -->
   <div class="section" id="sec-analise">
-    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
-      <select id="sel-session" style="flex:1;" onchange="loadAnalysis()">
+    <div style="margin-bottom:14px;">
+      <select id="sel-session" style="width:100%;" onchange="loadAnalysis()">
         <option value="">Selecione uma sessão...</option>
       </select>
     </div>
@@ -272,10 +317,9 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDfw_daD5cEQbixT4jlteUl0Lz9LTGtWYI",
@@ -289,7 +333,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// STATE
 let mode = 'jogo';
 let period = 1;
 let activeSession = null;
@@ -299,7 +342,7 @@ let history = [];
 let sessions = [];
 
 // TOAST
-window.showToast = function(msg) {
+function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
@@ -318,11 +361,11 @@ window.setMode = function(m) {
 }
 
 // TABS
-window.showTab = function(tab) {
+window.showTab = function(tab, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('sec-' + tab).classList.add('active');
-  event.currentTarget.classList.add('active');
+  if (btn) btn.classList.add('active');
   if (tab === 'historico') loadHistorico();
   if (tab === 'analise') loadSessionSelector();
   if (tab === 'atletas') renderAthletesList();
@@ -330,9 +373,13 @@ window.showTab = function(tab) {
 
 // ATHLETES
 async function loadAthletes() {
-  const q = query(collection(db, 'athletes'), orderBy('num'));
-  const snap = await getDocs(q);
-  athletes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  try {
+    const q = query(collection(db, 'athletes'), orderBy('num'));
+    const snap = await getDocs(q);
+    athletes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) {
+    athletes = [];
+  }
   renderAthletesList();
 }
 
@@ -356,12 +403,16 @@ window.removeAthlete = async function(id, nome) {
 
 function renderAthletesList() {
   const el = document.getElementById('athletes-list-config');
-  if (!athletes.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>Nenhum atleta cadastrado</p></div>'; return; }
+  if (!el) return;
+  if (!athletes.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>Nenhum atleta cadastrado</p></div>';
+    return;
+  }
   el.innerHTML = athletes.map(a => `
     <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;">
-      <div style="width:30px;height:30px;border-radius:50%;background:var(--blue2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">${a.num}</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#9b5de5,#39d353);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">${a.num}</div>
       <span style="flex:1;font-size:14px;font-weight:500;">${a.nome}</span>
-      <button onclick="removeAthlete('${a.id}','${a.nome}')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:18px;">×</button>
+      <button onclick="removeAthlete('${a.id}','${a.nome}')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:20px;line-height:1;">×</button>
     </div>`).join('');
 }
 
@@ -381,22 +432,16 @@ window.startSession = async function() {
   athletes.forEach(a => { sessionAthleteStats[a.id] = defaultStats(); });
   history = [];
 
-  activeSession = {
-    mode, data, adversario, campeonato, local,
-    status: 'active',
-    createdAt: serverTimestamp(),
-    athleteStats: sessionAthleteStats
-  };
-
-  const ref = await addDoc(collection(db, 'sessions'), activeSession);
-  activeSession.firestoreId = ref.id;
+  const sessionData = { mode, data, adversario, campeonato, local, status: 'active', createdAt: serverTimestamp(), athleteStats: sessionAthleteStats };
+  const ref = await addDoc(collection(db, 'sessions'), sessionData);
+  activeSession = { ...sessionData, firestoreId: ref.id };
 
   document.getElementById('session-config-card').style.display = 'none';
   document.getElementById('session-active').style.display = 'block';
 
-  const title = mode === 'jogo' ? (adversario ? `vs ${adversario}` : 'Jogo') : 'Treino';
+  const title = mode === 'jogo' ? (adversario ? 'vs ' + adversario : 'Jogo') : 'Treino';
   document.getElementById('session-title-display').textContent = title;
-  document.getElementById('session-info-display').textContent = `${data}${campeonato ? ' · ' + campeonato : ''}${local ? ' · ' + local : ''}`;
+  document.getElementById('session-info-display').textContent = data + (campeonato ? ' · ' + campeonato : '') + (local ? ' · ' + local : '');
 
   setPeriod(1);
   renderRegisterAthletes();
@@ -412,47 +457,48 @@ window.setPeriod = function(p) {
 function statTotal(aid, s) {
   const st = sessionAthleteStats[aid];
   if (!st) return 0;
-  return st[s].reduce((x,v)=>x+v,0);
+  return st[s].reduce((x,v) => x+v, 0);
 }
 
 function renderRegisterAthletes() {
   const el = document.getElementById('athletes-register');
+  if (!el) return;
   const p = period - 1;
   el.innerHTML = athletes.map(a => {
     const st = sessionAthleteStats[a.id] || defaultStats();
-    return `<div class="athlete-card">
-      <div class="athlete-header">
-        <div class="athlete-badge">${a.num}</div>
-        <div class="athlete-name">${a.nome}</div>
-        <div class="athlete-pts">${statTotal(a.id,'pontos')}pts</div>
-      </div>
-      <div class="stat-grid">
-        <button class="stat-btn arr" onclick="incStat('${a.id}','arremessos')">
-          <span class="stat-num">${st.arremessos[p]}</span>
-          <span class="stat-label">Arremesso</span>
-        </button>
-        <button class="stat-btn pts" onclick="incStat('${a.id}','pontos')">
-          <span class="stat-num">${st.pontos[p]}</span>
-          <span class="stat-label">Ponto</span>
-        </button>
-        <button class="stat-btn contra" onclick="incStat('${a.id}','contra')">
-          <span class="stat-num">${st.contra[p]}</span>
-          <span class="stat-label">Ct. Adv</span>
-        </button>
-        <button class="stat-btn falta" onclick="incStat('${a.id}','falta')">
-          <span class="stat-num">${st.falta[p]}</span>
-          <span class="stat-label">Falta</span>
-        </button>
-        <button class="stat-btn def" onclick="incStat('${a.id}','defesas')">
-          <span class="stat-num">${st.defesas[p]}</span>
-          <span class="stat-label">Defesa</span>
-        </button>
-        <button class="stat-btn bola" onclick="incStat('${a.id}','bola')">
-          <span class="stat-num">${st.bola[p]}</span>
-          <span class="stat-label">B.Derrub</span>
-        </button>
-      </div>
-    </div>`;
+    return '<div class="athlete-card">' +
+      '<div class="athlete-header">' +
+        '<div class="athlete-badge">' + a.num + '</div>' +
+        '<div class="athlete-name">' + a.nome + '</div>' +
+        '<div class="athlete-pts">' + statTotal(a.id,'pontos') + 'pts</div>' +
+      '</div>' +
+      '<div class="stat-grid">' +
+        '<button class="stat-btn arr" onclick="incStat(\'' + a.id + '\',\'arremessos\')">' +
+          '<span class="stat-num">' + st.arremessos[p] + '</span>' +
+          '<span class="stat-label">Arremesso</span>' +
+        '</button>' +
+        '<button class="stat-btn pts" onclick="incStat(\'' + a.id + '\',\'pontos\')">' +
+          '<span class="stat-num">' + st.pontos[p] + '</span>' +
+          '<span class="stat-label">Ponto</span>' +
+        '</button>' +
+        '<button class="stat-btn contra" onclick="incStat(\'' + a.id + '\',\'contra\')">' +
+          '<span class="stat-num">' + st.contra[p] + '</span>' +
+          '<span class="stat-label">Ponto Contra</span>' +
+        '</button>' +
+        '<button class="stat-btn falta" onclick="incStat(\'' + a.id + '\',\'falta\')">' +
+          '<span class="stat-num">' + st.falta[p] + '</span>' +
+          '<span class="stat-label">Falta</span>' +
+        '</button>' +
+        '<button class="stat-btn def" onclick="incStat(\'' + a.id + '\',\'defesas\')">' +
+          '<span class="stat-num">' + st.defesas[p] + '</span>' +
+          '<span class="stat-label">Defesa</span>' +
+        '</button>' +
+        '<button class="stat-btn bola" onclick="incStat(\'' + a.id + '\',\'bola\')">' +
+          '<span class="stat-num">' + st.bola[p] + '</span>' +
+          '<span class="stat-label">B.Derrub</span>' +
+        '</button>' +
+      '</div>' +
+    '</div>';
   }).join('');
   updateLiveScore();
 }
@@ -463,9 +509,9 @@ window.incStat = async function(aid, stat) {
   sessionAthleteStats[aid][stat][p]++;
   history.push({ aid, stat, p });
   renderRegisterAthletes();
-  if (activeSession?.firestoreId) {
+  if (activeSession && activeSession.firestoreId) {
     const update = {};
-    update[`athleteStats.${aid}.${stat}`] = sessionAthleteStats[aid][stat];
+    update['athleteStats.' + aid + '.' + stat] = sessionAthleteStats[aid][stat];
     await updateDoc(doc(db, 'sessions', activeSession.firestoreId), update);
   }
 }
@@ -477,9 +523,9 @@ window.undoLast = async function() {
     sessionAthleteStats[last.aid][last.stat][last.p]--;
   }
   renderRegisterAthletes();
-  if (activeSession?.firestoreId) {
+  if (activeSession && activeSession.firestoreId) {
     const update = {};
-    update[`athleteStats.${last.aid}.${last.stat}`] = sessionAthleteStats[last.aid][last.stat];
+    update['athleteStats.' + last.aid + '.' + last.stat] = sessionAthleteStats[last.aid][last.stat];
     await updateDoc(doc(db, 'sessions', activeSession.firestoreId), update);
   }
   showToast('↩ Desfeito');
@@ -488,16 +534,18 @@ window.undoLast = async function() {
 function updateLiveScore() {
   let pts = 0, contra = 0;
   Object.keys(sessionAthleteStats).forEach(aid => {
-    pts += sessionAthleteStats[aid].pontos.reduce((s,v)=>s+v,0);
-    contra += sessionAthleteStats[aid].contra.reduce((s,v)=>s+v,0);
+    pts += sessionAthleteStats[aid].pontos.reduce((s,v) => s+v, 0);
+    contra += sessionAthleteStats[aid].contra.reduce((s,v) => s+v, 0);
   });
-  document.getElementById('live-pts').textContent = pts;
-  document.getElementById('live-contra').textContent = contra;
+  const elPts = document.getElementById('live-pts');
+  const elCt = document.getElementById('live-contra');
+  if (elPts) elPts.textContent = pts;
+  if (elCt) elCt.textContent = contra;
 }
 
 window.finishSession = async function() {
   if (!confirm('Finalizar esta sessão?')) return;
-  if (activeSession?.firestoreId) {
+  if (activeSession && activeSession.firestoreId) {
     await updateDoc(doc(db, 'sessions', activeSession.firestoreId), { status: 'finished' });
   }
   activeSession = null;
@@ -512,165 +560,220 @@ window.finishSession = async function() {
 async function loadHistorico() {
   const el = document.getElementById('historico-list');
   el.innerHTML = '<div class="loading">Carregando...</div>';
-  const q = query(collection(db, 'sessions'), orderBy('createdAt', 'desc'));
-  const snap = await getDocs(q);
-  sessions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-  if (!sessions.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">📁</div><p>Nenhuma sessão registrada</p></div>'; return; }
-
-  el.innerHTML = sessions.map(s => {
-    const pts = calcTotalPts(s);
-    const ct = calcTotalCt(s);
-    const dateStr = s.data || '';
-    const title = s.mode === 'jogo' ? (s.adversario ? `vs ${s.adversario}` : 'Jogo') : 'Treino';
-    const sub = [dateStr, s.campeonato, s.local].filter(Boolean).join(' · ');
-    return `<div class="session-item" onclick="openSession('${s.id}')">
-      <div class="session-icon ${s.mode}">${s.mode === 'jogo' ? '🏆' : '🏃'}</div>
-      <div class="session-info">
-        <div style="display:flex;align-items:center;gap:6px;">
-          <span class="session-title">${title}</span>
-          <span class="tag tag-${s.mode}">${s.mode}</span>
-          ${s.status === 'active' ? '<span class="tag" style="background:rgba(239,68,68,0.2);color:#fca5a5;">ao vivo</span>' : ''}
-        </div>
-        <div class="session-sub">${sub}</div>
-      </div>
-      <div class="session-score">${pts}<span style="color:var(--muted);font-size:12px;">×</span>${ct}</div>
-    </div>`;
-  }).join('');
+  try {
+    const q = query(collection(db, 'sessions'), orderBy('createdAt', 'desc'));
+    const snap = await getDocs(q);
+    sessions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (!sessions.length) {
+      el.innerHTML = '<div class="empty"><div class="empty-icon">📁</div><p>Nenhuma sessão registrada</p></div>';
+      return;
+    }
+    el.innerHTML = sessions.map(s => {
+      const pts = calcTotalPts(s);
+      const ct = calcTotalCt(s);
+      const title = s.mode === 'jogo' ? (s.adversario ? 'vs ' + s.adversario : 'Jogo') : 'Treino';
+      const sub = [s.data, s.campeonato, s.local].filter(Boolean).join(' · ');
+      const aoVivo = s.status === 'active' ? '<span class="tag" style="background:rgba(240,79,94,0.2);color:#fca5a5;">ao vivo</span>' : '';
+      return '<div class="session-item" onclick="openSession(\'' + s.id + '\')">' +
+        '<div class="session-icon ' + s.mode + '">' + (s.mode === 'jogo' ? '🏆' : '🏃') + '</div>' +
+        '<div class="session-info">' +
+          '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
+            '<span class="session-title">' + title + '</span>' +
+            '<span class="tag tag-' + s.mode + '">' + s.mode + '</span>' +
+            aoVivo +
+          '</div>' +
+          '<div class="session-sub">' + sub + '</div>' +
+        '</div>' +
+        '<div class="session-score">' + pts + '<span style="color:var(--muted);font-size:12px;">×</span>' + ct + '</div>' +
+      '</div>';
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div><p>Erro ao carregar. Verifique a conexão.</p></div>';
+  }
 }
 
 function calcTotalPts(s) {
   if (!s.athleteStats) return 0;
-  return Object.values(s.athleteStats).reduce((t, st) => t + st.pontos.reduce((a,b)=>a+b,0), 0);
+  return Object.values(s.athleteStats).reduce((t, st) => t + (st.pontos || [0,0,0]).reduce((a,b) => a+b, 0), 0);
 }
 function calcTotalCt(s) {
   if (!s.athleteStats) return 0;
-  return Object.values(s.athleteStats).reduce((t, st) => t + st.contra.reduce((a,b)=>a+b,0), 0);
+  return Object.values(s.athleteStats).reduce((t, st) => t + (st.contra || [0,0,0]).reduce((a,b) => a+b, 0), 0);
 }
 
 window.openSession = function(id) {
-  showTab_direct('analise');
-  document.getElementById('sel-session').value = id;
-  loadAnalysis();
-}
-
-function showTab_direct(tab) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('sec-' + tab).classList.add('active');
+  document.getElementById('sec-analise').classList.add('active');
   document.querySelectorAll('.nav-btn')[1].classList.add('active');
-  loadSessionSelector();
+  loadSessionSelector(id);
 }
 
 // ANÁLISE
-async function loadSessionSelector() {
+async function loadSessionSelector(selectId) {
   const sel = document.getElementById('sel-session');
-  const current = sel.value;
-  const q = query(collection(db, 'sessions'), orderBy('createdAt', 'desc'));
-  const snap = await getDocs(q);
-  sessions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  sel.innerHTML = '<option value="">Selecione uma sessão...</option>' +
-    sessions.map(s => {
-      const title = s.mode === 'jogo' ? (s.adversario ? `vs ${s.adversario}` : 'Jogo') : 'Treino';
-      return `<option value="${s.id}">${s.data || ''} — ${title}</option>`;
-    }).join('');
-  if (current) { sel.value = current; loadAnalysis(); }
+  const current = selectId || sel.value;
+  try {
+    const q = query(collection(db, 'sessions'), orderBy('createdAt', 'desc'));
+    const snap = await getDocs(q);
+    sessions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    sel.innerHTML = '<option value="">Selecione uma sessão...</option>' +
+      sessions.map(s => {
+        const title = s.mode === 'jogo' ? (s.adversario ? 'vs ' + s.adversario : 'Jogo') : 'Treino';
+        return '<option value="' + s.id + '">' + (s.data || '') + ' — ' + title + '</option>';
+      }).join('');
+    if (current) { sel.value = current; loadAnalysis(); }
+  } catch(e) {}
 }
 
 window.loadAnalysis = function() {
   const id = document.getElementById('sel-session').value;
-  if (!id) { document.getElementById('analysis-content').innerHTML = '<div class="empty"><div class="empty-icon">📊</div><p>Selecione uma sessão</p></div>'; return; }
+  if (!id) {
+    document.getElementById('analysis-content').innerHTML = '<div class="empty"><div class="empty-icon">📊</div><p>Selecione uma sessão</p></div>';
+    return;
+  }
   const s = sessions.find(x => x.id === id);
   if (!s) return;
   renderAnalysis(s);
 }
 
+// PERFIL POKÉMON
+function getProfile(arr, pts, def) {
+  const ef = arr > 0 ? pts/arr : 0;
+  if (pts >= 3 && ef >= 0.6) return { emoji: '🎯', label: 'Artilheira', cls: 'artilheira', color: '#22c55e', desc: 'Letal no ataque' };
+  if (def >= 3) return { emoji: '🛡️', label: 'Guardiã', cls: 'guardia', color: '#a78bfa', desc: 'Muralha defensiva' };
+  if (arr >= 4 && pts < 2) return { emoji: '⚔️', label: 'Guerreira', cls: 'guerreira', color: '#ef4444', desc: 'Alta pressão, baixa conversão' };
+  if (arr >= 2 && def >= 1 && pts >= 1) return { emoji: '⚡', label: 'Completa', cls: 'equilibrada', color: '#f59e0b', desc: 'Equilibrada em campo' };
+  if (arr >= 2) return { emoji: '💜', label: 'Estrategista', cls: 'estrategista', color: '#9b5de5', desc: 'Criando jogadas' };
+  return { emoji: '🌱', label: 'Em Desenvolvimento', cls: 'iniciante', color: '#8b90a8', desc: 'Construindo seu jogo' };
+}
+
+function buildPokeCard(a, as, maxArr, maxPts, maxDef) {
+  const arr = (as.arremessos || [0,0,0]).reduce((x,v) => x+v, 0);
+  const pts = (as.pontos || [0,0,0]).reduce((x,v) => x+v, 0);
+  const ct  = (as.contra || [0,0,0]).reduce((x,v) => x+v, 0);
+  const flt = (as.falta || [0,0,0]).reduce((x,v) => x+v, 0);
+  const def = (as.defesas || [0,0,0]).reduce((x,v) => x+v, 0);
+  const bol = (as.bola || [0,0,0]).reduce((x,v) => x+v, 0);
+  const ef  = arr > 0 ? Math.round((pts/arr)*100) : 0;
+  const p   = getProfile(arr, pts, def);
+
+  const bars = [
+    { label: '🎯 Ataque', val: arr, max: Math.max(maxArr,1), color: '#9b5de5' },
+    { label: '💥 Pontos', val: pts, max: Math.max(maxPts,1), color: '#39d353' },
+    { label: '🛡️ Defesa', val: def, max: Math.max(maxDef,1), color: '#a78bfa' },
+    { label: '⚡ Efic.',  val: ef,  max: 100,                color: '#f59e0b' },
+  ];
+
+  const barHtml = bars.map(b => {
+    const pct = Math.round((b.val / b.max) * 100);
+    return '<div class="poke-bar-row">' +
+      '<span class="poke-bar-label">' + b.label + '</span>' +
+      '<div class="poke-bar-track"><div class="poke-bar-fill" style="width:' + pct + '%;background:' + b.color + ';"></div></div>' +
+      '<span class="poke-bar-val" style="color:' + b.color + ';">' + b.val + (b.label.includes('Efic') ? '%' : '') + '</span>' +
+    '</div>';
+  }).join('');
+
+  return '<div class="poke-card ' + p.cls + '">' +
+    '<div class="poke-title-row">' +
+      '<span class="poke-emoji">' + p.emoji + '</span>' +
+      '<div><div class="poke-name">' + a.nome + '</div><div class="poke-num">#' + a.num + '</div></div>' +
+    '</div>' +
+    '<span class="poke-type" style="background:' + p.color + '22;color:' + p.color + ';">' + p.label + '</span>' +
+    '<div class="poke-desc">' + p.desc + '</div>' +
+    '<div class="poke-bars">' + barHtml + '</div>' +
+    '<div class="poke-bottom">' +
+      '<span class="poke-stat">❌ ' + ct + ' pto.contra</span>' +
+      '<span class="poke-stat">⚠️ ' + flt + ' falta</span>' +
+      '<span class="poke-stat">🏐 ' + bol + ' derrub.</span>' +
+    '</div>' +
+  '</div>';
+}
+
 function renderAnalysis(s) {
   const st = s.athleteStats || {};
-  const allAthletes = athletes;
   const totPts = calcTotalPts(s);
-  const totCt = calcTotalCt(s);
-  const totArr = Object.values(st).reduce((t, a) => t + a.arremessos.reduce((x,b)=>x+b,0), 0);
-  const totDef = Object.values(st).reduce((t, a) => t + a.defesas.reduce((x,b)=>x+b,0), 0);
+  const totCt  = calcTotalCt(s);
+  const totArr = Object.values(st).reduce((t, a) => t + (a.arremessos||[0,0,0]).reduce((x,b)=>x+b,0), 0);
+  const totDef = Object.values(st).reduce((t, a) => t + (a.defesas||[0,0,0]).reduce((x,b)=>x+b,0), 0);
   const ef = totArr > 0 ? Math.round((totPts/totArr)*100) : 0;
-
   const isJogo = s.mode === 'jogo';
-  const title = isJogo ? (s.adversario ? `vs ${s.adversario}` : 'Jogo') : 'Treino';
+  const title = isJogo ? (s.adversario ? 'vs ' + s.adversario : 'Jogo') : 'Treino';
 
+  // Por tempo (só jogo)
   let periodHtml = '';
   if (isJogo) {
-    periodHtml = `<div class="card">
-      <div class="card-title">⏱ Por Tempo</div>
-      <div class="period-sum">
-        ${[1,2,3].map(p => {
-          const pp = p-1;
-          const pts = Object.values(st).reduce((t,a)=>t+a.pontos[pp],0);
-          const ct = Object.values(st).reduce((t,a)=>t+a.contra[pp],0);
-          return `<div class="psum-card">
-            <div class="psum-label">${p}° Tempo</div>
-            <div class="psum-pts">${pts}</div>
-            <div class="psum-ct">${ct} ct</div>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>`;
+    periodHtml = '<div class="card"><div class="card-title">⏱ Por Tempo</div><div class="period-sum">';
+    for (let p = 0; p < 3; p++) {
+      const pp = Object.values(st).reduce((t,a) => t+(a.pontos||[0,0,0])[p], 0);
+      const ct = Object.values(st).reduce((t,a) => t+(a.contra||[0,0,0])[p], 0);
+      periodHtml += '<div class="psum-card"><div class="psum-label">' + (p+1) + '° Tempo</div><div class="psum-pts">' + pp + '</div><div class="psum-ct">' + ct + ' ct</div></div>';
+    }
+    periodHtml += '</div></div>';
   }
 
-  const rankRows = [...allAthletes]
+  // Máximos para barra relativa
+  const maxArr = Math.max(...athletes.filter(a=>st[a.id]).map(a=>(st[a.id].arremessos||[0,0,0]).reduce((x,v)=>x+v,0)), 1);
+  const maxPts = Math.max(...athletes.filter(a=>st[a.id]).map(a=>(st[a.id].pontos||[0,0,0]).reduce((x,v)=>x+v,0)), 1);
+  const maxDef = Math.max(...athletes.filter(a=>st[a.id]).map(a=>(st[a.id].defesas||[0,0,0]).reduce((x,v)=>x+v,0)), 1);
+
+  // Cards perfil
+  const pokeCards = athletes.filter(a => st[a.id]).map(a => buildPokeCard(a, st[a.id], maxArr, maxPts, maxDef)).join('');
+
+  // Ranking
+  const rankRows = [...athletes]
     .filter(a => st[a.id])
     .sort((a,b) => {
-      const ptA = st[a.id].pontos.reduce((x,v)=>x+v,0);
-      const ptB = st[b.id].pontos.reduce((x,v)=>x+v,0);
-      return ptB - ptA;
+      const pa = (st[a.id].pontos||[0,0,0]).reduce((x,v)=>x+v,0);
+      const pb = (st[b.id].pontos||[0,0,0]).reduce((x,v)=>x+v,0);
+      return pb - pa;
     })
     .map((a, i) => {
       const as = st[a.id];
-      if (!as) return '';
-      const arr = as.arremessos.reduce((x,v)=>x+v,0);
-      const pts = as.pontos.reduce((x,v)=>x+v,0);
-      const ct = as.contra.reduce((x,v)=>x+v,0);
-      const flt = as.falta.reduce((x,v)=>x+v,0);
-      const def = as.defesas.reduce((x,v)=>x+v,0);
-      const bol = as.bola.reduce((x,v)=>x+v,0);
-      const ef = arr > 0 ? Math.round((pts/arr)*100) : 0;
-      return `<tr>
-        <td style="font-weight:700;color:var(--muted);">${i+1}</td>
-        <td><strong>${a.nome}</strong> <span style="font-size:10px;color:var(--muted);">#${a.num}</span></td>
-        <td style="color:var(--blue);">${arr}</td>
-        <td style="color:var(--green);font-weight:700;">${pts}</td>
-        <td style="color:var(--red);">${ct}</td>
-        <td style="color:var(--amber);">${flt}</td>
-        <td style="color:#a78bfa;">${def}</td>
-        <td style="color:var(--pink);">${bol}</td>
-        <td style="font-weight:600;">${ef}%</td>
-      </tr>`;
+      const arr = (as.arremessos||[0,0,0]).reduce((x,v)=>x+v,0);
+      const pts = (as.pontos||[0,0,0]).reduce((x,v)=>x+v,0);
+      const ct  = (as.contra||[0,0,0]).reduce((x,v)=>x+v,0);
+      const flt = (as.falta||[0,0,0]).reduce((x,v)=>x+v,0);
+      const def = (as.defesas||[0,0,0]).reduce((x,v)=>x+v,0);
+      const bol = (as.bola||[0,0,0]).reduce((x,v)=>x+v,0);
+      const eff = arr > 0 ? Math.round((pts/arr)*100) : 0;
+      return '<tr>' +
+        '<td style="font-weight:700;color:var(--muted);">' + (i+1) + '</td>' +
+        '<td><strong>' + a.nome + '</strong> <span style="font-size:10px;color:var(--muted);">#' + a.num + '</span></td>' +
+        '<td style="color:var(--purple);">' + arr + '</td>' +
+        '<td style="color:var(--green);font-weight:700;">' + pts + '</td>' +
+        '<td style="color:var(--red);">' + ct + '</td>' +
+        '<td style="color:var(--amber);">' + flt + '</td>' +
+        '<td style="color:#a78bfa;">' + def + '</td>' +
+        '<td style="color:var(--pink);">' + bol + '</td>' +
+        '<td style="font-weight:600;">' + eff + '%</td>' +
+      '</tr>';
     }).join('');
 
-  document.getElementById('analysis-content').innerHTML = `
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-      <span style="font-size:18px;">${isJogo ? '🏆' : '🏃'}</span>
-      <div>
-        <div style="font-size:16px;font-weight:700;">${title}</div>
-        <div style="font-size:12px;color:var(--muted);">${[s.data, s.campeonato, s.local].filter(Boolean).join(' · ')}</div>
-      </div>
-    </div>
-    <div class="metrics-grid">
-      <div class="metric"><div class="metric-label">Pontos Feitos</div><div class="metric-val" style="color:var(--green);">${totPts}</div></div>
-      <div class="metric"><div class="metric-label">Pontos Tomados</div><div class="metric-val" style="color:var(--red);">${totCt}</div></div>
-      <div class="metric"><div class="metric-label">Arremessos</div><div class="metric-val">${totArr}</div></div>
-      <div class="metric"><div class="metric-label">Eficiência</div><div class="metric-val">${ef}%<span style="font-size:13px;color:var(--muted);"> | ${totDef} def</span></div></div>
-    </div>
-    ${periodHtml}
-    <div class="card">
-      <div class="card-title">🏅 Ranking de Atletas</div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>#</th><th>Atleta</th><th>Arr</th><th>Pts</th><th>Ct</th><th>Flt</th><th>Def</th><th>Bol</th><th>Ef%</th></tr></thead>
-          <tbody>${rankRows || '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px;">Nenhuma estatística</td></tr>'}</tbody>
-        </table>
-      </div>
-    </div>
-  `;
+  document.getElementById('analysis-content').innerHTML =
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">' +
+      '<span style="font-size:20px;">' + (isJogo ? '🏆' : '🏃') + '</span>' +
+      '<div>' +
+        '<div style="font-size:16px;font-weight:700;">' + title + '</div>' +
+        '<div style="font-size:12px;color:var(--muted);">' + [s.data, s.campeonato, s.local].filter(Boolean).join(' · ') + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="metrics-grid">' +
+      '<div class="metric"><div class="metric-label">Pontos Feitos</div><div class="metric-val" style="color:var(--green);">' + totPts + '</div></div>' +
+      '<div class="metric"><div class="metric-label">Pontos Tomados</div><div class="metric-val" style="color:var(--red);">' + totCt + '</div></div>' +
+      '<div class="metric"><div class="metric-label">Arremessos</div><div class="metric-val">' + totArr + '</div></div>' +
+      '<div class="metric"><div class="metric-label">Eficiência</div><div class="metric-val">' + ef + '%<span style="font-size:13px;color:var(--muted);"> | ' + totDef + ' def</span></div></div>' +
+    '</div>' +
+    periodHtml +
+    '<div class="card"><div class="card-title">🃏 Perfil das Atletas</div>' +
+      '<div class="poke-grid">' + (pokeCards || '<p style="color:var(--muted);font-size:13px;padding:8px 0;">Nenhuma estatística ainda.</p>') + '</div>' +
+    '</div>' +
+    '<div class="card"><div class="card-title">🏅 Ranking de Atletas</div>' +
+      '<div class="table-wrap"><table>' +
+        '<thead><tr><th>#</th><th>Atleta</th><th>Arr</th><th>Pts</th><th>Ct</th><th>Flt</th><th>Def</th><th>Bol</th><th>Ef%</th></tr></thead>' +
+        '<tbody>' + (rankRows || '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px;">Nenhuma estatística</td></tr>') + '</tbody>' +
+      '</table></div>' +
+    '</div>';
 }
 
 // INIT
@@ -680,3 +783,5 @@ await loadAthletes();
 </script>
 </body>
 </html>
+HTMLEOF
+echo "Done"
