@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Áquila Tchoukball Stats</title>
+<style>
+  :root {
+    --bg: #080a0e;
+    --bg2: #10131a;
+    --bg3: #181c26;
+    --border: rgba(255,255,255,0.07);
+    --text: #f0f0ff;
+    --muted: #7a7a9a;
+    --purple: #9b5de5;
+    --purple2: #7c3aed;
+    --green: #39d353;
+    --red: #f04f5e;
+    --amber: #f59e0b;
+    --pink: #c084fc;
+    --radius: 14px;
+    --radius-sm: 9px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--bg); color: var(--text); font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; min-height: 100vh; }
+
+  .header { background: linear-gradient(90deg, #10131a, #1a1030); border-bottom: 1px solid rgba(155,93,229,0.25); padding: 14px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
+  .header-logo { width: 36px; height: 36px; background: linear-gradient(135deg, #9b5de5, #39d353); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .header-title { font-size: 16px; font-weight: 700; background: linear-gradient(90deg, #9b5de5, #39d353); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .header-sub { font-size: 11px; color: var(--muted); }
+  .header-mode { margin-left: auto; display: flex; gap: 6px; }
+  .mode-btn { padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; transition: all .2s; }
+  .mode-btn.active { background: linear-gradient(135deg, #9b5de5, #7c3aed); color: #fff; border-color: #9b5de5; }
+
+  .nav { display: flex; background: var(--bg2); border-bottom: 1px solid rgba(155,93,229,0.2); overflow-x: auto; scrollbar-width: none; }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn { flex: 1; min-width: 70px; padding: 12px 6px; border: none; background: transparent; color: var(--muted); font-size: 11px; cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; white-space: nowrap; }
+  .nav-btn.active { color: #39d353; border-bottom-color: #39d353; }
+
+  .content { padding: 16px; max-width: 800px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+  .card-title { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: .5px; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group label { font-size: 11px; color: var(--muted); }
+  input, select { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; color: var(--text); font-size: 14px; width: 100%; outline: none; }
+  input:focus, select:focus { border-color: var(--purple); }
+  select option { background: var(--bg3); }
+
+  .btn { padding: 10px 18px; border-radius: var(--radius-sm); border: none; cursor: pointer; font-size: 14px; font-weight: 600; transition: all .15s; }
+  .btn-primary { background: linear-gradient(135deg, #9b5de5, #7c3aed); color: #fff; }
+  .btn-primary:active { transform: scale(0.97); }
+  .btn-danger { background: rgba(240,79,94,0.15); color: var(--red); border: 1px solid rgba(240,79,94,0.3); }
+  .btn-success { background: rgba(57,211,83,0.15); color: var(--green); border: 1px solid rgba(57,211,83,0.3); }
+  .btn-amber { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .btn-full { width: 100%; margin-top: 4px; }
+
+  /* PERIOD BAR */
+  .period-bar { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; flex-wrap: wrap; }
+  .period-label { font-size: 12px; color: var(--muted); }
+  .period-btn { padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 13px; cursor: pointer; transition: all .2s; }
+  .period-btn.active { background: #9b5de5; color: #fff; border-color: #9b5de5; }
+
+  /* SCOREBOARD */
+  .scoreboard { display: flex; align-items: center; justify-content: center; gap: 16px; background: var(--bg3); border: 1px solid rgba(155,93,229,0.25); border-radius: var(--radius); padding: 14px; margin-bottom: 14px; }
+  .score-team { text-align: center; flex: 1; }
+  .score-team-name { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .score-num { font-size: 42px; font-weight: 700; line-height: 1; }
+  .score-sep { font-size: 28px; color: var(--muted); font-weight: 300; }
+
+  /* ATHLETE CARD */
+  .athlete-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin-bottom: 10px; }
+  .athlete-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .athlete-badge { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #9b5de5, #39d353); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .athlete-name { font-size: 15px; font-weight: 600; flex: 1; }
+  .athlete-pts { font-size: 13px; color: var(--green); font-weight: 600; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stat-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 6px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg3); cursor: pointer; transition: all .1s; user-select: none; -webkit-user-select: none; }
+  .stat-btn:active { transform: scale(0.93); }
+  .stat-num { font-size: 22px; font-weight: 700; line-height: 1; }
+  .stat-label { font-size: 10px; color: var(--muted); text-align: center; }
+  .stat-btn.arr .stat-num { color: var(--purple); }
+  .stat-btn.pts .stat-num { color: var(--green); }
+  .stat-btn.contra .stat-num { color: var(--red); }
+  .stat-btn.falta .stat-num { color: var(--amber); }
+  .stat-btn.def .stat-num { color: #a78bfa; }
+  .stat-btn.bola .stat-num { color: var(--pink); }
+
+  /* METRICS */
+  .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+  .metric { background: var(--bg3); border-radius: var(--radius-sm); padding: 12px; }
+  .metric-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .metric-val { font-size: 26px; font-weight: 700; }
+  .metric-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { padding: 8px 10px; text-align: left; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 9px 10px; border-bottom: 1px solid var(--border); color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* SESSION LIST */
+  .session-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg3); border-radius: var(--radius-sm); margin-bottom: 8px; cursor: pointer; transition: background .2s; border: 1px solid transparent; }
+  .session-item:hover { background: var(--bg2); border-color: var(--border); }
+  .session-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .session-icon.jogo { background: rgba(155,93,229,0.2); }
+  .session-icon.treino { background: rgba(57,211,83,0.2); }
+  .session-info { flex: 1; min-width: 0; }
+  .session-title { font-size: 14px; font-weight: 600; }
+  .session-sub { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .session-score { font-size: 16px; font-weight: 700; color: var(--green); flex-shrink: 0; }
+
+  /* TAGS */
+  .tag { display: inline-block; padding: 3px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+  .tag-jogo { background: rgba(155,93,229,0.2); color: #c084fc; }
+  .tag-treino { background: rgba(57,211,83,0.2); color: #86efac; }
+  .tag-live { background: rgba(240,79,94,0.2); color: #fca5a5; }
+  .tag-done { background: rgba(57,211,83,0.15); color: #86efac; }
+  .tag-fase { background: rgba(245,158,11,0.15); color: #fcd34d; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg2); border: 1px solid rgba(155,93,229,0.4); padding: 10px 20px; border-radius: 20px; font-size: 13px; z-index: 9999; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap; }
+  .toast.show { opacity: 1; }
+
+  .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
+  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty p { font-size: 14px; }
+  .loading { text-align: center; padding: 30px; color: var(--muted); font-size: 14px; }
+
+  .undo-row { display: flex; justify-content: space-between; margin-top: 10px; gap: 8px; }
+  .undo-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 7px 14px; border-radius: 20px; font-size: 11px; cursor: pointer; }
+
+  /* PERIOD SUMMARY */
+  .period-sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+  .psum-card { background: var(--bg3); border-radius: var(--radius-sm); padding: 10px; text-align: center; }
+  .psum-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+  .psum-pts { font-size: 20px; font-weight: 700; color: var(--green); }
+  .psum-ct { font-size: 12px; color: var(--red); }
+
+  /* ATHLETE ANALYSIS CARD */
+  .ath-analysis-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+  .ath-analysis-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .ath-analysis-badge { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #9b5de5, #39d353); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+  .ath-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+  .ath-stat-item { background: var(--bg3); border-radius: var(--radius-sm); padding: 10px; text-align: center; }
+  .ath-stat-val { font-size: 20px; font-weight: 700; }
+  .ath-stat-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  /* PROFILE CARDS */
+  .poke-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 14px; }
+  .poke-card { border-radius: 16px; padding: 16px; border: 2px solid transparent; position: relative; overflow: hidden; }
+  .poke-card::before { content: ''; position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; border-radius: 50%; opacity: .1; }
+  .poke-card.artilheira { background: linear-gradient(135deg, #0d1f0d, #081208); border-color: rgba(34,197,94,0.35); }
+  .poke-card.artilheira::before { background: #22c55e; }
+  .poke-card.guardia { background: linear-gradient(135deg, #0d0d2b, #08081a); border-color: rgba(167,139,250,0.35); }
+  .poke-card.guardia::before { background: #a78bfa; }
+  .poke-card.guerreira { background: linear-gradient(135deg, #1f0d0d, #120808); border-color: rgba(239,68,68,0.35); }
+  .poke-card.guerreira::before { background: #ef4444; }
+  .poke-card.estrategista { background: linear-gradient(135deg, #0d0820, #080512); border-color: rgba(155,93,229,0.35); }
+  .poke-card.estrategista::before { background: #9b5de5; }
+  .poke-card.equilibrada { background: linear-gradient(135deg, #150d20, #0d0812); border-color: rgba(245,158,11,0.35); }
+  .poke-card.equilibrada::before { background: #f59e0b; }
+  .poke-card.iniciante { background: linear-gradient(135deg, #12151e, #0a0c14); border-color: rgba(139,144,168,0.25); }
+  .poke-card.iniciante::before { background: #8b90a8; }
+  .poke-title-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .poke-emoji { font-size: 24px; }
+  .poke-name { font-size: 14px; font-weight: 700; }
+  .poke-num { font-size: 10px; color: var(--muted); }
+  .poke-type { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-bottom: 6px; display: inline-block; }
+  .poke-desc { font-size: 10px; color: var(--muted); margin-bottom: 10px; }
+  .poke-bars { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+  .poke-bar-row { display: flex; align-items: center; gap: 6px; }
+  .poke-bar-label { font-size: 10px; color: var(--muted); width: 60px; flex-shrink: 0; }
+  .poke-bar-track { flex: 1; height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+  .poke-bar-fill { height: 100%; border-radius: 3px; }
+  .poke-bar-val { font-size: 10px; font-weight: 600; width: 26px; text-align: right; flex-shrink: 0; }
+  .poke-bottom { display: flex; gap: 5px; flex-wrap: wrap; }
+  .poke-stat { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.06); }
+
+  /* CHAMPIONSHIPS PAGE */
+  .champ-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+  .champ-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .champ-trophy { font-size: 28px; }
+  .podium-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .podium-item { background: var(--bg3); border-radius: var(--radius-sm); padding: 12px; text-align: center; cursor: pointer; border: 2px solid transparent; transition: all .2s; }
+  .podium-item:hover { border-color: var(--purple); }
+  .podium-item.selected-1 { border-color: #ffd700; background: rgba(255,215,0,0.08); }
+  .podium-item.selected-2 { border-color: #c0c0c0; background: rgba(192,192,192,0.08); }
+  .podium-item.selected-3 { border-color: #cd7f32; background: rgba(205,127,50,0.08); }
+  .podium-medal { font-size: 24px; margin-bottom: 4px; }
+  .podium-label { font-size: 12px; color: var(--muted); }
+
+  /* ANALYSIS TABS */
+  .anal-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+  .anal-tab { padding: 7px 16px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; transition: all .2s; }
+  .anal-tab.active { background: var(--purple); color: #fff; border-color: var(--purple); }
+
+  /* GAME STATUS BAR */
+  .game-status-bar { display: flex; align-items: center; justify-content: space-between; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 14px; }
+  .game-status-info { font-size: 13px; font-weight: 600; }
+  .game-status-sub { font-size: 11px; color: var(--muted); }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+  .status-dot.live { background: var(--red); animation: pulse 1.5s infinite; }
+  .status-dot.done { background: var(--green); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  @media (max-width: 480px) {
+    .form-row { grid-template-columns: 1fr; }
+    .form-row-3 { grid-template-columns: 1fr 1fr; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .poke-grid { grid-template-columns: 1fr; }
+    .ath-stats-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">🦅</div>
+  <div>
+    <div class="header-title">Áquila Stats</div>
+    <div class="header-sub" id="header-sub">Beach Tchoukball</div>
+  </div>
+  <div class="header-mode">
+    <button class="mode-btn active" id="btn-mode-jogo" onclick="setMode('jogo')">🏆 Jogo</button>
+    <button class="mode-btn" id="btn-mode-treino" onclick="setMode('treino')">🏃 Treino</button>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showTab('registrar',this)">📋 Registrar</button>
+  <button class="nav-btn" onclick="showTab('analise',this)">📊 Análise</button>
+  <button class="nav-btn" onclick="showTab('historico',this)">📁 Histórico</button>
+  <button class="nav-btn" onclick="showTab('atletas',this)">👥 Atletas</button>
+  <button class="nav-btn" onclick="showTab('campeonatos',this)">🏅 Campeonatos</button>
+</div>
+
+<div class="content">
+
+  <!-- REGISTRAR -->
+  <div class="section active" id="sec-registrar">
+    <div class="card" id="session-config-card">
+      <div class="card-title" id="config-title">⚙️ Configurar Jogo</div>
+      <div class="form-row" id="adversario-row">
+        <div class="form-group">
+          <label>Adversário</label>
+          <input type="text" id="inp-adversario" placeholder="Nome do time adversário" />
+        </div>
+        <div class="form-group">
+          <label>Campeonato</label>
+          <input type="text" id="inp-campeonato" placeholder="Ex: Brasileiro" />
+        </div>
+      </div>
+      <div class="form-row" id="fase-row">
+        <div class="form-group">
+          <label>Fase do Campeonato</label>
+          <select id="inp-fase">
+            <option value="">Selecione a fase...</option>
+            <option value="Fase de Grupos">Fase de Grupos</option>
+            <option value="Quartas de Final">Quartas de Final</option>
+            <option value="Semifinal">Semifinal</option>
+            <option value="Final">Final</option>
+            <option value="Amistoso">Amistoso</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Local</label>
+          <input type="text" id="inp-local" placeholder="Ex: São Paulo" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Data</label>
+          <input type="date" id="inp-data" />
+        </div>
+        <div class="form-group">
+          <label>Hora de início</label>
+          <input type="time" id="inp-hora" />
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="startSession()">▶ Iniciar Jogo</button>
+    </div>
+
+    <div id="session-active" style="display:none;">
+      <!-- Status bar -->
+      <div class="game-status-bar">
+        <div>
+          <div class="game-status-info" id="status-game-title">Jogo</div>
+          <div class="game-status-sub" id="status-game-sub"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="status-dot live" id="status-dot"></span>
+          <span style="font-size:11px;color:var(--muted);" id="status-label">Em andamento</span>
+        </div>
+      </div>
+
+      <!-- Placar -->
+      <div class="scoreboard" id="scoreboard-box">
+        <div class="score-team">
+          <div class="score-team-name">🦅 Áquila</div>
+          <div class="score-num" style="color:var(--green);" id="live-pts">0</div>
+        </div>
+        <div class="score-sep">×</div>
+        <div class="score-team">
+          <div class="score-team-name" id="score-adv-name">Adversário</div>
+          <div class="score-num" style="color:var(--red);" id="live-contra">0</div>
+        </div>
+      </div>
+
+      <!-- Tempos (só jogo) -->
+      <div id="period-section">
+        <div class="period-bar">
+          <span class="period-label">Tempo:</span>
+          <button class="period-btn active" id="pb-1" onclick="setPeriod(1)">1°</button>
+          <button class="period-btn" id="pb-2" onclick="setPeriod(2)">2°</button>
+          <button class="period-btn" id="pb-3" onclick="setPeriod(3)">3°</button>
+        </div>
+      </div>
+
+      <div id="athletes-register"></div>
+
+      <div class="undo-row">
+        <button class="undo-btn" onclick="undoLast()">↩ Desfazer</button>
+        <button class="btn btn-success btn-sm" onclick="finishSession()">✅ Finalizar Jogo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANÁLISE -->
+  <div class="section" id="sec-analise">
+    <div style="margin-bottom:12px;">
+      <select id="sel-session" style="width:100%;" onchange="loadAnalysis()">
+        <option value="">Selecione uma sessão...</option>
+      </select>
+    </div>
+    <div class="anal-tabs" id="anal-tabs" style="display:none;">
+      <button class="anal-tab active" id="tab-geral" onclick="switchAnalTab('geral',this)">📊 Geral</button>
+      <button class="anal-tab" id="tab-atletas" onclick="switchAnalTab('atletas',this)">👤 Por Atleta</button>
+    </div>
+    <div id="analysis-content">
+      <div class="empty"><div class="empty-icon">📊</div><p>Selecione uma sessão para ver a análise</p></div>
+    </div>
+    <div id="analysis-athletes" style="display:none;"></div>
+  </div>
+
+  <!-- HISTÓRICO -->
+  <div class="section" id="sec-historico">
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <input type="text" id="filter-hist" placeholder="🔍 Buscar adversário ou campeonato..." oninput="filterHistorico()" style="flex:1;" />
+    </div>
+    <div id="historico-list"><div class="loading">Carregando...</div></div>
+  </div>
+
+  <!-- ATLETAS -->
+  <div class="section" id="sec-atletas">
+    <div class="card">
+      <div class="card-title">➕ Adicionar Atleta</div>
+      <div class="form-row-3">
+        <div class="form-group">
+          <label>Número</label>
+          <input type="number" id="inp-ath-num" placeholder="N°" min="0" max="99" />
+        </div>
+        <div class="form-group" style="grid-column:span 2;">
+          <label>Nome</label>
+          <input type="text" id="inp-ath-nome" placeholder="Nome completo" onkeydown="if(event.key==='Enter')addAthlete()" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Posição</label>
+          <select id="inp-ath-pos">
+            <option value="">Selecione...</option>
+            <option>Ala Esquerda</option>
+            <option>Ala Direita</option>
+            <option>Central</option>
+            <option>Defensor</option>
+            <option>Coringa</option>
+            <option>Outra</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Mão Dominante</label>
+          <select id="inp-ath-mao">
+            <option value="">Selecione...</option>
+            <option>Direita</option>
+            <option>Esquerda</option>
+            <option>Ambidestra</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="addAthlete()">Adicionar Atleta</button>
+    </div>
+    <div id="athletes-list-config"></div>
+  </div>
+
+  <!-- CAMPEONATOS -->
+  <div class="section" id="sec-campeonatos">
+    <div class="card">
+      <div class="card-title">🏆 Registrar Resultado de Campeonato</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nome do Campeonato</label>
+          <input type="text" id="inp-champ-nome" placeholder="Ex: Campeonato Brasileiro" />
+        </div>
+        <div class="form-group">
+          <label>Ano</label>
+          <input type="number" id="inp-champ-ano" placeholder="2026" min="2020" max="2030" />
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:10px;">
+        <label>Local</label>
+        <input type="text" id="inp-champ-local" placeholder="Ex: São Paulo, SP" />
+      </div>
+      <div class="form-group" style="margin-bottom:14px;">
+        <label>Colocação Final</label>
+        <div class="podium-grid">
+          <div class="podium-item" id="pod-1" onclick="selectPodium(1)">
+            <div class="podium-medal">🥇</div>
+            <div class="podium-label">1° Lugar</div>
+          </div>
+          <div class="podium-item" id="pod-2" onclick="selectPodium(2)">
+            <div class="podium-medal">🥈</div>
+            <div class="podium-label">2° Lugar</div>
+          </div>
+          <div class="podium-item" id="pod-3" onclick="selectPodium(3)">
+            <div class="podium-medal">🥉</div>
+            <div class="podium-label">3° Lugar</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:12px;">
+        <label>Observações (opcional)</label>
+        <input type="text" id="inp-champ-obs" placeholder="Ex: Invictas, artilheira..." />
+      </div>
+      <button class="btn btn-primary btn-full" onclick="saveChampionship()">💾 Salvar Resultado</button>
+    </div>
+    <div id="championships-list"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDfw_daD5cEQbixT4jlteUl0Lz9LTGtWYI",
+  authDomain: "tchoukball-8a931.firebaseapp.com",
+  projectId: "tchoukball-8a931",
+  storageBucket: "tchoukball-8a931.firebasestorage.app",
+  messagingSenderId: "977850787605",
+  appId: "1:977850787605:web:75bffc53eace5bf50c6b1c"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let mode = 'jogo';
+let period = 1;
+let activeSession = null;
+let athletes = [];
+let sessionAthleteStats = {};
+let history = [];
+let sessions = [];
+let selectedPodium = null;
+let currentAnalTab = 'geral';
+let allSessions = [];
+
+// ─── UTILS ───────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function defaultStats() {
+  return { arremessos:[0,0,0], pontos:[0,0,0], contra:[0,0,0], falta:[0,0,0], defesas:[0,0,0], bola:[0,0,0] };
+}
+
+function safeArr(v) { return Array.isArray(v) ? v : [0,0,0]; }
+function sumArr(v) { return safeArr(v).reduce((a,b)=>a+b,0); }
+
+function calcTotalPts(s) {
+  if (!s.athleteStats) return 0;
+  return Object.values(s.athleteStats).reduce((t,a)=>t+sumArr(a.pontos),0);
+}
+function calcTotalCt(s) {
+  if (!s.athleteStats) return 0;
+  return Object.values(s.athleteStats).reduce((t,a)=>t+sumArr(a.contra),0);
+}
+
+// ─── MODE ─────────────────────────────────────────────────
+window.setMode = function(m) {
+  mode = m;
+  document.getElementById('btn-mode-jogo').classList.toggle('active', m==='jogo');
+  document.getElementById('btn-mode-treino').classList.toggle('active', m==='treino');
+  document.getElementById('adversario-row').style.display = m==='jogo'?'grid':'none';
+  document.getElementById('fase-row').style.display = m==='jogo'?'grid':'none';
+  document.getElementById('config-title').textContent = m==='jogo'?'⚙️ Configurar Jogo':'⚙️ Configurar Treino';
+  document.getElementById('period-section').style.display = m==='jogo'?'block':'none';
+  document.getElementById('scoreboard-box').style.display = m==='jogo'?'flex':'none';
+  document.getElementById('header-sub').textContent = m==='jogo'?'Modo Jogo':'Modo Treino';
+}
+
+// ─── TABS ─────────────────────────────────────────────────
+window.showTab = function(tab, btn) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+tab).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (tab==='historico') loadHistorico();
+  if (tab==='analise') loadSessionSelector();
+  if (tab==='atletas') renderAthletesList();
+  if (tab==='campeonatos') loadChampionships();
+}
+
+// ─── ATHLETES ─────────────────────────────────────────────
+async function loadAthletes() {
+  try {
+    const q = query(collection(db,'athletes'), orderBy('num'));
+    const snap = await getDocs(q);
+    athletes = snap.docs.map(d=>({id:d.id,...d.data()}));
+  } catch(e) { athletes=[]; }
+  renderAthletesList();
+}
+
+window.addAthlete = async function() {
+  const num  = document.getElementById('inp-ath-num').value.trim();
+  const nome = document.getElementById('inp-ath-nome').value.trim();
+  const pos  = document.getElementById('inp-ath-pos').value;
+  const mao  = document.getElementById('inp-ath-mao').value;
+  if (!nome) { showToast('Digite o nome do atleta'); return; }
+  await addDoc(collection(db,'athletes'), { num:num||'?', nome, posicao:pos, maoDominante:mao, ativo:true, createdAt:serverTimestamp() });
+  document.getElementById('inp-ath-num').value='';
+  document.getElementById('inp-ath-nome').value='';
+  document.getElementById('inp-ath-pos').value='';
+  document.getElementById('inp-ath-mao').value='';
+  await loadAthletes();
+  showToast('✅ Atleta adicionado!');
+}
+
+window.removeAthlete = async function(id, nome) {
+  if (!confirm('Remover '+nome+'?')) return;
+  await deleteDoc(doc(db,'athletes',id));
+  await loadAthletes();
+  showToast('Atleta removido');
+}
+
+function renderAthletesList() {
+  const el = document.getElementById('athletes-list-config');
+  if (!el) return;
+  if (!athletes.length) { el.innerHTML='<div class="empty"><div class="empty-icon">👥</div><p>Nenhum atleta cadastrado</p></div>'; return; }
+  el.innerHTML = athletes.map(a=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;">
+      <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#9b5de5,#39d353);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">${a.num}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:600;">${a.nome}</div>
+        <div style="font-size:11px;color:var(--muted);">${[a.posicao,a.maoDominante].filter(Boolean).join(' · ')}</div>
+      </div>
+      <button onclick="removeAthlete('${a.id}','${a.nome}')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:22px;line-height:1;">×</button>
+    </div>`).join('');
+}
+
+// ─── SESSION ──────────────────────────────────────────────
+window.startSession = async function() {
+  if (!athletes.length) { showToast('⚠️ Adicione atletas primeiro!'); return; }
+  const data       = document.getElementById('inp-data').value || new Date().toISOString().split('T')[0];
+  const hora       = document.getElementById('inp-hora').value || '';
+  const adversario = document.getElementById('inp-adversario').value.trim();
+  const campeonato = document.getElementById('inp-campeonato').value.trim();
+  const fase       = document.getElementById('inp-fase') ? document.getElementById('inp-fase').value : '';
+  const local      = document.getElementById('inp-local').value.trim();
+
+  sessionAthleteStats = {};
+  athletes.forEach(a=>{ sessionAthleteStats[a.id]=defaultStats(); });
+  history=[];
+
+  const sessionData = {
+    mode, data, hora, adversario, campeonato, fase, local,
+    status: 'active',
+    startedAt: new Date().toISOString(),
+    finishedAt: null,
+    createdAt: serverTimestamp(),
+    athleteStats: sessionAthleteStats
+  };
+
+  const ref = await addDoc(collection(db,'sessions'), sessionData);
+  activeSession = {...sessionData, firestoreId:ref.id};
+
+  document.getElementById('session-config-card').style.display='none';
+  document.getElementById('session-active').style.display='block';
+
+  const title = mode==='jogo'?(adversario?'vs '+adversario:'Jogo'):'Treino';
+  document.getElementById('status-game-title').textContent = title;
+  const subParts = [data, hora, campeonato, fase, local].filter(Boolean);
+  document.getElementById('status-game-sub').textContent = subParts.join(' · ');
+  if (adversario) document.getElementById('score-adv-name').textContent = '⚔️ '+adversario;
+
+  setPeriod(1);
+  renderRegisterAthletes();
+  showToast('✅ Jogo iniciado!');
+}
+
+window.setPeriod = function(p) {
+  period=p;
+  [1,2,3].forEach(i=>document.getElementById('pb-'+i).classList.toggle('active',i===p));
+  renderRegisterAthletes();
+}
+
+function statTotal(aid,s) {
+  const st=sessionAthleteStats[aid];
+  if(!st) return 0;
+  return sumArr(st[s]);
+}
+
+function renderRegisterAthletes() {
+  const el=document.getElementById('athletes-register');
+  if(!el) return;
+  const p=period-1;
+  el.innerHTML=athletes.map(a=>{
+    const st=sessionAthleteStats[a.id]||defaultStats();
+    return '<div class="athlete-card">'+
+      '<div class="athlete-header">'+
+        '<div class="athlete-badge">'+a.num+'</div>'+
+        '<div>'+
+          '<div class="athlete-name">'+a.nome+'</div>'+
+          (a.posicao?'<div style="font-size:10px;color:var(--muted);">'+a.posicao+'</div>':'')+
+        '</div>'+
+        '<div class="athlete-pts">'+statTotal(a.id,'pontos')+'pts</div>'+
+      '</div>'+
+      '<div class="stat-grid">'+
+        mkBtn(a.id,'arremessos','arr',st.arremessos[p],'Arremesso')+
+        mkBtn(a.id,'pontos','pts',st.pontos[p],'Ponto')+
+        mkBtn(a.id,'contra','contra',st.contra[p],'Ponto Contra')+
+        mkBtn(a.id,'falta','falta',st.falta[p],'Falta')+
+        mkBtn(a.id,'defesas','def',st.defesas[p],'Defesa')+
+        mkBtn(a.id,'bola','bola',st.bola[p],'B.Derrub')+
+      '</div>'+
+    '</div>';
+  }).join('');
+  updateLiveScore();
+}
+
+function mkBtn(aid,stat,cls,val,label) {
+  return '<button class="stat-btn '+cls+'" onclick="incStat(\''+aid+'\',\''+stat+'\')">'+
+    '<span class="stat-num">'+val+'</span>'+
+    '<span class="stat-label">'+label+'</span>'+
+  '</button>';
+}
+
+window.incStat = async function(aid,stat) {
+  const p=period-1;
+  if(!sessionAthleteStats[aid]) sessionAthleteStats[aid]=defaultStats();
+  sessionAthleteStats[aid][stat][p]++;
+  history.push({aid,stat,p});
+  renderRegisterAthletes();
+  if(activeSession&&activeSession.firestoreId) {
+    const update={};
+    update['athleteStats.'+aid+'.'+stat]=sessionAthleteStats[aid][stat];
+    await updateDoc(doc(db,'sessions',activeSession.firestoreId),update);
+  }
+}
+
+window.undoLast = async function() {
+  if(!history.length){showToast('Nada para desfazer');return;}
+  const last=history.pop();
+  if(sessionAthleteStats[last.aid][last.stat][last.p]>0) sessionAthleteStats[last.aid][last.stat][last.p]--;
+  renderRegisterAthletes();
+  if(activeSession&&activeSession.firestoreId){
+    const update={};
+    update['athleteStats.'+last.aid+'.'+last.stat]=sessionAthleteStats[last.aid][last.stat];
+    await updateDoc(doc(db,'sessions',activeSession.firestoreId),update);
+  }
+  showToast('↩ Desfeito');
+}
+
+function updateLiveScore(){
+  let pts=0,contra=0;
+  Object.keys(sessionAthleteStats).forEach(aid=>{
+    pts+=sumArr(sessionAthleteStats[aid].pontos);
+    contra+=sumArr(sessionAthleteStats[aid].contra);
+  });
+  const ep=document.getElementById('live-pts');
+  const ec=document.getElementById('live-contra');
+  if(ep) ep.textContent=pts;
+  if(ec) ec.textContent=contra;
+}
+
+window.finishSession = async function() {
+  if(!confirm('Finalizar este jogo?')) return;
+  const finishedAt=new Date().toISOString();
+  if(activeSession&&activeSession.firestoreId){
+    await updateDoc(doc(db,'sessions',activeSession.firestoreId),{status:'finished',finishedAt});
+  }
+  activeSession=null;
+  sessionAthleteStats={};
+  history=[];
+  document.getElementById('session-config-card').style.display='block';
+  document.getElementById('session-active').style.display='none';
+  showToast('✅ Jogo finalizado e salvo!');
+}
+
+// ─── HISTÓRICO ────────────────────────────────────────────
+async function loadHistorico() {
+  const el=document.getElementById('historico-list');
+  el.innerHTML='<div class="loading">Carregando...</div>';
+  try {
+    const q=query(collection(db,'sessions'),orderBy('createdAt','desc'));
+    const snap=await getDocs(q);
+    allSessions=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderHistoricoList(allSessions);
+  } catch(e){
+    el.innerHTML='<div class="empty"><div class="empty-icon">⚠️</div><p>Erro ao carregar.</p></div>';
+  }
+}
+
+function renderHistoricoList(list) {
+  const el=document.getElementById('historico-list');
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">📁</div><p>Nenhuma sessão registrada</p></div>';return;}
+  el.innerHTML=list.map(s=>{
+    const pts=calcTotalPts(s), ct=calcTotalCt(s);
+    const title=s.mode==='jogo'?(s.adversario?'vs '+s.adversario:'Jogo'):'Treino';
+    const subParts=[s.data,s.campeonato,s.fase,s.local].filter(Boolean);
+    const isLive=s.status==='active';
+    const statusTag=isLive
+      ?'<span class="tag tag-live">● ao vivo</span>'
+      :'<span class="tag tag-done">✓ finalizado</span>';
+    const faseTag=s.fase?'<span class="tag tag-fase">'+s.fase+'</span>':'';
+    return '<div class="session-item" onclick="openSession(\''+s.id+'\')">'+
+      '<div class="session-icon '+s.mode+'">'+(s.mode==='jogo'?'🏆':'🏃')+'</div>'+
+      '<div class="session-info">'+
+        '<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:3px;">'+
+          '<span class="session-title">'+title+'</span>'+
+          '<span class="tag tag-'+s.mode+'">'+s.mode+'</span>'+
+          faseTag+
+          statusTag+
+        '</div>'+
+        '<div class="session-sub">'+subParts.join(' · ')+'</div>'+
+      '</div>'+
+      '<div class="session-score">'+pts+'<span style="color:var(--muted);font-size:11px;">×</span>'+ct+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+window.filterHistorico = function() {
+  const q=document.getElementById('filter-hist').value.toLowerCase();
+  if(!q){renderHistoricoList(allSessions);return;}
+  const filtered=allSessions.filter(s=>{
+    const adv=(s.adversario||'').toLowerCase();
+    const camp=(s.campeonato||'').toLowerCase();
+    return adv.includes(q)||camp.includes(q);
+  });
+  renderHistoricoList(filtered);
+}
+
+window.openSession = function(id) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-analise').classList.add('active');
+  document.querySelectorAll('.nav-btn')[1].classList.add('active');
+  loadSessionSelector(id);
+}
+
+// ─── ANÁLISE ──────────────────────────────────────────────
+window.switchAnalTab = function(tab, btn) {
+  currentAnalTab=tab;
+  document.querySelectorAll('.anal-tab').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const id=document.getElementById('sel-session').value;
+  if(!id) return;
+  const s=sessions.find(x=>x.id===id);
+  if(!s) return;
+  if(tab==='geral'){
+    document.getElementById('analysis-content').style.display='block';
+    document.getElementById('analysis-athletes').style.display='none';
+  } else {
+    document.getElementById('analysis-content').style.display='none';
+    document.getElementById('analysis-athletes').style.display='block';
+    renderAthleteAnalysis(s);
+  }
+}
+
+async function loadSessionSelector(selectId) {
+  const sel=document.getElementById('sel-session');
+  const current=selectId||sel.value;
+  try {
+    const q=query(collection(db,'sessions'),orderBy('createdAt','desc'));
+    const snap=await getDocs(q);
+    sessions=snap.docs.map(d=>({id:d.id,...d.data()}));
+    sel.innerHTML='<option value="">Selecione uma sessão...</option>'+
+      sessions.map(s=>{
+        const title=s.mode==='jogo'?(s.adversario?'vs '+s.adversario:'Jogo'):'Treino';
+        const fase=s.fase?' ['+s.fase+']':'';
+        const status=s.status==='active'?' ●':'';
+        return '<option value="'+s.id+'">'+(s.data||'')+' — '+title+fase+status+'</option>';
+      }).join('');
+    if(current){sel.value=current;loadAnalysis();}
+  } catch(e){}
+}
+
+window.loadAnalysis = function() {
+  const id=document.getElementById('sel-session').value;
+  const tabsEl=document.getElementById('anal-tabs');
+  if(!id){
+    tabsEl.style.display='none';
+    document.getElementById('analysis-content').innerHTML='<div class="empty"><div class="empty-icon">📊</div><p>Selecione uma sessão</p></div>';
+    document.getElementById('analysis-athletes').style.display='none';
+    return;
+  }
+  const s=sessions.find(x=>x.id===id);
+  if(!s) return;
+  tabsEl.style.display='flex';
+  currentAnalTab='geral';
+  document.getElementById('tab-geral').classList.add('active');
+  document.getElementById('tab-atletas').classList.remove('active');
+  document.getElementById('analysis-content').style.display='block';
+  document.getElementById('analysis-athletes').style.display='none';
+  renderAnalysis(s);
+}
+
+// ─── ANÁLISE GERAL ────────────────────────────────────────
+function renderAnalysis(s) {
+  const st=s.athleteStats||{};
+  const totPts=calcTotalPts(s), totCt=calcTotalCt(s);
+  const totArr=Object.values(st).reduce((t,a)=>t+sumArr(a.arremessos),0);
+  const totDef=Object.values(st).reduce((t,a)=>t+sumArr(a.defesas),0);
+  const totFlt=Object.values(st).reduce((t,a)=>t+sumArr(a.falta),0);
+  const totBol=Object.values(st).reduce((t,a)=>t+sumArr(a.bola),0);
+  const ef=totArr>0?Math.round((totPts/totArr)*100):0;
+  const isJogo=s.mode==='jogo';
+  const title=isJogo?(s.adversario?'vs '+s.adversario:'Jogo'):'Treino';
+  const subParts=[s.data,s.campeonato,s.fase,s.local].filter(Boolean);
+
+  // Status do jogo
+  const isLive=s.status==='active';
+  const statusHtml='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:10px 14px;background:var(--bg3);border-radius:var(--radius-sm);">'+
+    '<span style="font-size:8px;width:8px;height:8px;border-radius:50%;display:inline-block;background:'+(isLive?'var(--red)':'var(--green)')+';">&nbsp;</span>'+
+    '<span style="font-size:12px;color:var(--muted);">'+(isLive?'Em andamento':'Finalizado')+(s.finishedAt?' · Encerrado em '+s.finishedAt.substring(11,16):'')+'</span>'+
+  '</div>';
+
+  // Placar final (só jogo)
+  let placarHtml='';
+  if(isJogo){
+    const resultado=totPts>totCt?'✅ Vitória':totPts<totCt?'❌ Derrota':'🤝 Empate';
+    placarHtml='<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;text-align:center;">'+
+      '<div style="font-size:11px;color:var(--muted);margin-bottom:6px;">PLACAR FINAL</div>'+
+      '<div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:8px;">'+
+        '<div><div style="font-size:11px;color:var(--muted);">🦅 Áquila</div><div style="font-size:44px;font-weight:700;color:var(--green);">'+totPts+'</div></div>'+
+        '<div style="font-size:28px;color:var(--muted);">×</div>'+
+        '<div><div style="font-size:11px;color:var(--muted);">⚔️ '+(s.adversario||'Adversário')+'</div><div style="font-size:44px;font-weight:700;color:var(--red);">'+totCt+'</div></div>'+
+      '</div>'+
+      '<span style="font-size:13px;font-weight:600;">'+resultado+'</span>'+
+    '</div>';
+  }
+
+  // Por tempo
+  let periodHtml='';
+  if(isJogo){
+    periodHtml='<div class="card"><div class="card-title">⏱ Desempenho por Tempo</div><div class="period-sum">';
+    for(let p=0;p<3;p++){
+      const pp=Object.values(st).reduce((t,a)=>t+safeArr(a.pontos)[p],0);
+      const ct=Object.values(st).reduce((t,a)=>t+safeArr(a.contra)[p],0);
+      const arrp=Object.values(st).reduce((t,a)=>t+safeArr(a.arremessos)[p],0);
+      const efp=arrp>0?Math.round((pp/arrp)*100):0;
+      periodHtml+='<div class="psum-card">'+
+        '<div class="psum-label">'+(p+1)+'° Tempo</div>'+
+        '<div class="psum-pts">'+pp+'</div>'+
+        '<div class="psum-ct">'+ct+' contra</div>'+
+        '<div style="font-size:10px;color:var(--muted);margin-top:2px;">'+efp+'% ef.</div>'+
+      '</div>';
+    }
+    periodHtml+='</div></div>';
+  }
+
+  // Destaques
+  const athWithStats=athletes.filter(a=>st[a.id]);
+  let mvpHtml='';
+  if(athWithStats.length>0){
+    const mvp=[...athWithStats].sort((a,b)=>sumArr(st[b.id].pontos)-sumArr(st[a.id].pontos))[0];
+    const topDef=[...athWithStats].sort((a,b)=>sumArr(st[b.id].defesas)-sumArr(st[a.id].defesas))[0];
+    const mvpPts=sumArr(st[mvp.id].pontos);
+    const topDefN=sumArr(st[topDef.id].defesas);
+    mvpHtml='<div class="card"><div class="card-title">⭐ Destaques da Partida</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'+
+        '<div style="background:var(--bg3);border-radius:var(--radius-sm);padding:12px;text-align:center;border:1px solid rgba(57,211,83,0.2);">'+
+          '<div style="font-size:20px;">🎯</div>'+
+          '<div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Artilheira</div>'+
+          '<div style="font-size:14px;font-weight:700;">'+mvp.nome+'</div>'+
+          '<div style="font-size:12px;color:var(--green);">'+mvpPts+' pontos</div>'+
+        '</div>'+
+        '<div style="background:var(--bg3);border-radius:var(--radius-sm);padding:12px;text-align:center;border:1px solid rgba(167,139,250,0.2);">'+
+          '<div style="font-size:20px;">🛡️</div>'+
+          '<div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Melhor Defesa</div>'+
+          '<div style="font-size:14px;font-weight:700;">'+topDef.nome+'</div>'+
+          '<div style="font-size:12px;color:#a78bfa;">'+topDefN+' defesas</div>'+
+        '</div>'+
+      '</div></div>';
+  }
+
+  // Tabela geral
+  const tableRows=[...athletes].filter(a=>st[a.id]).sort((a,b)=>sumArr(st[b.id].pontos)-sumArr(st[a.id].pontos)).map((a,i)=>{
+    const as=st[a.id];
+    const arr=sumArr(as.arremessos), pts=sumArr(as.pontos), ct=sumArr(as.contra);
+    const flt=sumArr(as.falta), def=sumArr(as.defesas), bol=sumArr(as.bola);
+    const eff=arr>0?Math.round((pts/arr)*100):0;
+    return '<tr>'+
+      '<td style="color:var(--muted);font-weight:700;">'+(i+1)+'</td>'+
+      '<td><strong>'+a.nome+'</strong><br><span style="font-size:10px;color:var(--muted);">#'+a.num+(a.posicao?' · '+a.posicao:'')+'</span></td>'+
+      '<td style="color:var(--purple);">'+arr+'</td>'+
+      '<td style="color:var(--green);font-weight:700;">'+pts+'</td>'+
+      '<td style="color:var(--red);">'+ct+'</td>'+
+      '<td style="color:var(--amber);">'+flt+'</td>'+
+      '<td style="color:#a78bfa;">'+def+'</td>'+
+      '<td style="color:var(--pink);">'+bol+'</td>'+
+      '<td style="font-weight:600;">'+eff+'%</td>'+
+    '</tr>';
+  }).join('');
+
+  document.getElementById('analysis-content').innerHTML=
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">'+
+      '<span style="font-size:22px;">'+(isJogo?'🏆':'🏃')+'</span>'+
+      '<div>'+
+        '<div style="font-size:17px;font-weight:700;">'+title+'</div>'+
+        '<div style="font-size:12px;color:var(--muted);">'+subParts.join(' · ')+'</div>'+
+      '</div>'+
+    '</div>'+
+    statusHtml+
+    placarHtml+
+    '<div class="metrics-grid">'+
+      '<div class="metric"><div class="metric-label">Pontos Feitos</div><div class="metric-val" style="color:var(--green);">'+totPts+'</div></div>'+
+      '<div class="metric"><div class="metric-label">Pontos Tomados</div><div class="metric-val" style="color:var(--red);">'+totCt+'</div></div>'+
+      '<div class="metric"><div class="metric-label">Arremessos</div><div class="metric-val">'+totArr+'</div><div class="metric-sub">Ef: '+ef+'%</div></div>'+
+      '<div class="metric"><div class="metric-label">Defesas</div><div class="metric-val" style="color:#a78bfa;">'+totDef+'</div><div class="metric-sub">'+totFlt+' faltas · '+totBol+' derrub.</div></div>'+
+    '</div>'+
+    periodHtml+
+    mvpHtml+
+    '<div class="card"><div class="card-title">📋 Estatísticas por Atleta</div>'+
+      '<div class="table-wrap"><table>'+
+        '<thead><tr><th>#</th><th>Atleta</th><th>Arr</th><th>Pts</th><th>Ct</th><th>Flt</th><th>Def</th><th>Bol</th><th>Ef%</th></tr></thead>'+
+        '<tbody>'+(tableRows||'<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px;">Nenhuma estatística</td></tr>')+'</tbody>'+
+      '</table></div>'+
+    '</div>';
+}
+
+// ─── ANÁLISE POR ATLETA ───────────────────────────────────
+function getProfile(arr,pts,def){
+  const ef=arr>0?pts/arr:0;
+  if(pts>=3&&ef>=0.6) return {emoji:'🎯',label:'Artilheira',cls:'artilheira',color:'#22c55e',desc:'Letal no ataque'};
+  if(def>=3) return {emoji:'🛡️',label:'Guardiã',cls:'guardia',color:'#a78bfa',desc:'Muralha defensiva'};
+  if(arr>=4&&pts<2) return {emoji:'⚔️',label:'Guerreira',cls:'guerreira',color:'#ef4444',desc:'Alta pressão'};
+  if(arr>=2&&def>=1&&pts>=1) return {emoji:'⚡',label:'Completa',cls:'equilibrada',color:'#f59e0b',desc:'Equilibrada em campo'};
+  if(arr>=2) return {emoji:'💜',label:'Estrategista',cls:'estrategista',color:'#9b5de5',desc:'Criando jogadas'};
+  return {emoji:'🌱',label:'Em Desenvolvimento',cls:'iniciante',color:'#8b90a8',desc:'Construindo seu jogo'};
+}
+
+function renderAthleteAnalysis(s){
+  const st=s.athleteStats||{};
+  const athList=athletes.filter(a=>st[a.id]);
+  if(!athList.length){
+    document.getElementById('analysis-athletes').innerHTML='<div class="empty"><div class="empty-icon">👤</div><p>Nenhuma estatística de atleta.</p></div>';
+    return;
+  }
+  const maxArr=Math.max(...athList.map(a=>sumArr(st[a.id].arremessos)),1);
+  const maxPts=Math.max(...athList.map(a=>sumArr(st[a.id].pontos)),1);
+  const maxDef=Math.max(...athList.map(a=>sumArr(st[a.id].defesas)),1);
+
+  const isJogo=s.mode==='jogo';
+
+  const cards=athList.sort((a,b)=>sumArr(st[b.id].pontos)-sumArr(st[a.id].pontos)).map(a=>{
+    const as=st[a.id];
+    const arr=sumArr(as.arremessos), pts=sumArr(as.pontos), ct=sumArr(as.contra);
+    const flt=sumArr(as.falta), def=sumArr(as.defesas), bol=sumArr(as.bola);
+    const ef=arr>0?Math.round((pts/arr)*100):0;
+    const p=getProfile(arr,pts,def);
+
+    const bars=[
+      {label:'🎯 Ataque', val:arr, max:maxArr, color:'#9b5de5'},
+      {label:'💥 Pontos', val:pts, max:maxPts, color:'#39d353'},
+      {label:'🛡️ Defesa', val:def, max:maxDef, color:'#a78bfa'},
+      {label:'⚡ Efic.',  val:ef,  max:100,    color:'#f59e0b'},
+    ];
+    const barHtml=bars.map(b=>{
+      const pct=Math.round((b.val/b.max)*100);
+      return '<div class="poke-bar-row">'+
+        '<span class="poke-bar-label">'+b.label+'</span>'+
+        '<div class="poke-bar-track"><div class="poke-bar-fill" style="width:'+pct+'%;background:'+b.color+';"></div></div>'+
+        '<span class="poke-bar-val" style="color:'+b.color+';">'+b.val+(b.label.includes('Efic')?'%':'')+'</span>'+
+      '</div>';
+    }).join('');
+
+    // Por tempo (só jogo)
+    let periodoHtml='';
+    if(isJogo){
+      periodoHtml='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06);">';
+      for(let pp=0;pp<3;pp++){
+        const pPts=safeArr(as.pontos)[pp], pArr=safeArr(as.arremessos)[pp];
+        periodoHtml+='<div style="text-align:center;">'+
+          '<div style="font-size:10px;color:var(--muted);">'+(pp+1)+'° Tempo</div>'+
+          '<div style="font-size:16px;font-weight:700;color:var(--green);">'+pPts+'</div>'+
+          '<div style="font-size:10px;color:var(--muted);">'+pArr+' arr</div>'+
+        '</div>';
+      }
+      periodoHtml+='</div>';
+    }
+
+    return '<div class="ath-analysis-card">'+
+      '<div class="ath-analysis-header">'+
+        '<div class="ath-analysis-badge">'+a.num+'</div>'+
+        '<div style="flex:1;">'+
+          '<div style="font-size:16px;font-weight:700;">'+a.nome+'</div>'+
+          '<div style="font-size:11px;color:var(--muted);">'+(a.posicao||'')+(a.maoDominante?' · '+a.maoDominante:'')+'</div>'+
+        '</div>'+
+        '<span class="poke-type" style="background:'+p.color+'22;color:'+p.color+';">'+p.emoji+' '+p.label+'</span>'+
+      '</div>'+
+      '<div class="ath-stats-grid">'+
+        '<div class="ath-stat-item"><div class="ath-stat-val" style="color:var(--purple);">'+arr+'</div><div class="ath-stat-lbl">Arremessos</div></div>'+
+        '<div class="ath-stat-item"><div class="ath-stat-val" style="color:var(--green);">'+pts+'</div><div class="ath-stat-lbl">Pontos</div></div>'+
+        '<div class="ath-stat-item"><div class="ath-stat-val" style="color:var(--amber);">'+ef+'%</div><div class="ath-stat-lbl">Eficiência</div></div>'+
+        '<div class="ath-stat-item"><div class="ath-stat-val" style="color:#a78bfa;">'+def+'</div><div class="ath-stat-lbl">Defesas</div></div>'+
+        '<div class="ath-stat-item"><div class="ath-stat-val" style="color:var(--red);">'+ct+'</div><div class="ath-stat-lbl">Pto.Contra</div></div>'+
+        '<div class="ath-stat-item"><div class="ath-stat-val" style="color:var(--amber);">'+flt+'</div><div class="ath-stat-lbl">Faltas</div></div>'+
+      '</div>'+
+      '<div class="poke-bars">'+barHtml+'</div>'+
+      '<div class="poke-bottom">'+
+        '<span class="poke-stat">🏐 '+bol+' derrub.</span>'+
+        '<span class="poke-stat" style="color:'+p.color+';">'+p.desc+'</span>'+
+      '</div>'+
+      periodoHtml+
+    '</div>';
+  }).join('');
+
+  document.getElementById('analysis-athletes').innerHTML=cards;
+}
+
+// ─── CAMPEONATOS ──────────────────────────────────────────
+window.selectPodium = function(pos) {
+  selectedPodium=pos;
+  [1,2,3].forEach(i=>{
+    const el=document.getElementById('pod-'+i);
+    el.className='podium-item'+(i===pos?' selected-'+i:'');
+  });
+}
+
+window.saveChampionship = async function() {
+  const nome=document.getElementById('inp-champ-nome').value.trim();
+  const ano=document.getElementById('inp-champ-ano').value.trim();
+  const local=document.getElementById('inp-champ-local').value.trim();
+  const obs=document.getElementById('inp-champ-obs').value.trim();
+  if(!nome){showToast('Digite o nome do campeonato');return;}
+  if(!selectedPodium){showToast('Selecione a colocação');return;}
+  await addDoc(collection(db,'championships'),{
+    nome, ano:parseInt(ano)||new Date().getFullYear(), local, obs,
+    colocacao:selectedPodium, createdAt:serverTimestamp()
+  });
+  document.getElementById('inp-champ-nome').value='';
+  document.getElementById('inp-champ-ano').value='';
+  document.getElementById('inp-champ-local').value='';
+  document.getElementById('inp-champ-obs').value='';
+  selectedPodium=null;
+  [1,2,3].forEach(i=>document.getElementById('pod-'+i).className='podium-item');
+  await loadChampionships();
+  showToast('🏆 Resultado salvo!');
+}
+
+async function loadChampionships() {
+  const el=document.getElementById('championships-list');
+  try {
+    const q=query(collection(db,'championships'),orderBy('ano','desc'));
+    const snap=await getDocs(q);
+    const champs=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(!champs.length){el.innerHTML='<div class="empty"><div class="empty-icon">🏅</div><p>Nenhum resultado registrado ainda</p></div>';return;}
+    const medals=['','🥇','🥈','🥉'];
+    const colors=['','#ffd700','#c0c0c0','#cd7f32'];
+    el.innerHTML='<div class="card-title" style="margin-bottom:12px;">🏛️ Histórico de Resultados</div>'+
+      champs.map(c=>`
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg3);border-radius:var(--radius-sm);margin-bottom:8px;border:1px solid rgba(255,255,255,0.05);">
+        <div style="font-size:32px;">${medals[c.colocacao]||'🏅'}</div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:700;color:${colors[c.colocacao]||'var(--text)'};">${c.colocacao}° Lugar</div>
+          <div style="font-size:13px;font-weight:600;">${c.nome} ${c.ano}</div>
+          <div style="font-size:11px;color:var(--muted);">${[c.local,c.obs].filter(Boolean).join(' · ')}</div>
+        </div>
+      </div>`).join('');
+  } catch(e){el.innerHTML='';}
+}
+
+window.deleteChampionship = async function(id) {
+  if(!confirm('Remover?')) return;
+  await deleteDoc(doc(db,'championships',id));
+  await loadChampionships();
+}
+
+// ─── INIT ─────────────────────────────────────────────────
+document.getElementById('inp-data').value = new Date().toISOString().split('T')[0];
+setMode('jogo');
+await loadAthletes();
+</script>
+</body>
+</html>
